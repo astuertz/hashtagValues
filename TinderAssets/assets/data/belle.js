@@ -1,0 +1,6 @@
+export default `Mary-Belle Kirschner (born 23 October 1999),[1] professionally known as Belle Delphine, is a South African-born English Internet celebrity, pornographic actress, model and YouTuber. Her social media accounts feature erotic and cosplay modelling, sometimes blending the two together. Delphine's online persona began in 2018 through her cosplay modeling on Instagram. Her posts on the platform were often influenced by popular memes and trends.
+
+In mid-2019, she gained notoriety through creating a satirical Pornhub account and selling her "GamerGirl Bath Water" product through her online store. Shortly after, her Instagram account was deleted due to community guideline violations. After a hiatus from October 2019 through June 2020, she started an OnlyFans account on which she posts adult content and began uploading YouTube music videos that were markedly explicit.
+
+Media outlets have described her as an "e-girl" and a cross between an Internet troll and a performance artist. Delphine has also been cited as an influence on the e-girl style commonly adopted by TikTok users. `;
+  
