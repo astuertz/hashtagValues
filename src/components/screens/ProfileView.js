@@ -7,6 +7,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useSelector, useDispatch, } from 'react-redux';
+import { increment, decrement, incrementByAmount, reset, setToAmount } from '../../features/counter/activeImgSlice';
 
 
 const WIDTH = Dimensions.get("window").width;
@@ -25,19 +27,20 @@ const ProfileView = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { name, images, bio, currentProfile, scrollToIndex} = route.params;
+  const activeImg = useSelector((state) => state.activeImg.value);
+  const dispatch = useDispatch();
 
-  const [activeImg, setActiveImage] = useState(0);
   const imagesRef = useRef(null);
   const profileViewisFocused = useIsFocused();
 
   useEffect(() => {
-    imagesRef.current?.scrollTo({x: WIDTH * scrollToIndex, animated: false});
+    imagesRef.current?.scrollTo({x: WIDTH * activeImg, animated: false});
   }, [profileViewisFocused]);
 
   onchange = ({nativeEvent}) => {
     if (!nativeEvent) return;
     const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
-    setActiveImage(slide);
+    dispatch(setToAmount(slide));
   };
 
   onended = () => {

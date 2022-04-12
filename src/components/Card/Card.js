@@ -11,6 +11,8 @@ import { useNavigation, useRoute, useIsFocused, useFocusEffect } from '@react-na
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useSelector, useDispatch, } from 'react-redux';
+import { increment, decrement, incrementByAmount, reset, } from '../../features/counter/activeImgSlice';
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -19,38 +21,39 @@ const Card = (props) => {
 
   const { name, images, bio, currentProfile } = props.profileData;
   const cardIsFocused = useIsFocused();
+  const activeImg = useSelector((state) => state.activeImg.value);
+  const dispatch = useDispatch();
 
   const gotoProfileView = () => navigation.push("ProfileView", {
     name: name,
     images: images,
     bio: bio,
     currentProfile: currentProfile,
-    scrollToIndex: activeImg,
     });
 
   useEffect(() => {
     if (!cardIsFocused) return;
-    setActiveImage(0);
+    dispatch(reset());
     translateImagesX.value = 0;
   }, [props.profileData]);
 
 
-  const [activeImg, setActiveImage] = useState(0);
-
   const navigation = useNavigation();
+
+  useEffect(() => {
+    translateImagesX.value = activeImg * -WIDTH;
+  }, [cardIsFocused]);
 
   onRight = () => {
     if (activeImg == images.length - 1) return;
     translateImagesX.value = translateImagesX.value - WIDTH;
-    const slide = activeImg + 1;
-    setActiveImage(slide);
+    dispatch(increment());
   };
 
   onLeft = () => {
     if (activeImg == 0) return;
     translateImagesX.value = translateImagesX.value + WIDTH;
-    const slide = activeImg - 1;
-    setActiveImage(slide);
+    dispatch(decrement());
   };
 
   const translateImagesX = useSharedValue(0);

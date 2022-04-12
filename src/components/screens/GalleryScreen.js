@@ -1,13 +1,16 @@
 import { View, Text, Button, StyleSheet, Image, Dimensions, ScrollView } from 'react-native';
 import React, { useState, useEffect, useRef, } from 'react';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
+import { useSelector, useDispatch, } from 'react-redux';
+import { increment, decrement, incrementByAmount, reset, setToAmount } from '../../features/counter/activeImgSlice';
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 const GalleryScreen = () => {
 
-  const [activeImg2, setActiveImage2] = useState(0);
+  const activeImg = useSelector((state) => state.activeImg.value);
+  const dispatch = useDispatch();
   const imagesRef = useRef(null);
 
   const navigation = useNavigation();
@@ -23,8 +26,8 @@ const GalleryScreen = () => {
   onchange = ({nativeEvent}) => {
     if (nativeEvent) {
       const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
-      if (slide != activeImg2) {
-        setActiveImage2(slide);
+      if (slide != activeImg) {
+        dispatch(setToAmount(slide));
       }
     }
   };
@@ -58,7 +61,7 @@ const GalleryScreen = () => {
           {
             images.map((e, index) =>
               <Text key={e}
-              style={activeImg2 == index ? styles.dotActive : styles.dotInactive}>
+              style={activeImg == index ? styles.dotActive : styles.dotInactive}>
                 ●
               </Text>  
             )
