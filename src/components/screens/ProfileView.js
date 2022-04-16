@@ -46,7 +46,6 @@ const ProfileView = () => {
   onended = () => {
       navigation.push("Gallery", {
         images: images,
-        scrollToIndex: activeImg,
       });
   };
 

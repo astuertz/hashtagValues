@@ -1,14 +1,29 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import {View, Text, StyleSheet, Button, Alert,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Auth } from 'aws-amplify';
+import { useSelector, useDispatch, } from 'react-redux';
+import { signOutUser } from '../../features/counter/userAuthSlice';
 
+const dispatch = useDispatch();
+
+const onSignOut = async () => {
+  try {
+      await Auth.signOut();
+      dispatch(signOutUser());
+  } catch (error) {
+      Alert.alert('error signing out: ', error.message);
+      return;
+  }
+  Alert.alert('Sign Out Successful!');
+}
 
 const ProfileScreen = () => {
 
   return (
       <SafeAreaView style={styles.pageContainer}>
         <Text>ProfileScreen</Text>
+        <Button title="Sign Out" onPress={onSignOut} />
       </SafeAreaView>
   );
 };

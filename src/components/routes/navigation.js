@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 
 import HomeScreen from '../screens/HomeScreen';
 import MatchScreen from '../screens/MatchScreen';
@@ -71,7 +70,9 @@ const AppTabsScreen = () => (
 
 const AuthStack = createNativeStackNavigator();
 const AuthStackScreen = () => (
-    <AuthStack.Navigator>
+    <AuthStack.Navigator screenOptions={{ 
+      headerShown: false, 
+      }}>
         <AuthStack.Screen name="SignIn" component={SignIn} />
         <AuthStack.Screen name="SignUp" component={SignUp} />
     </AuthStack.Navigator>
@@ -86,8 +87,8 @@ const RootStackScreen = () => {
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(!isLoading);
-            setUser({});
-        }, 500)
+            setUser('user');
+        }, 2500)
     }, []);
 
     return (
@@ -96,8 +97,7 @@ const RootStackScreen = () => {
         animationEnabled: false, 
         headerShown: false, 
         presentation: 'modal',
-        }
-        }>
+        }}>
         {isLoading ? (
         <RootStack.Screen name="LoadingScreen" component={LoadingScreen} /> 
         ) : user ? (
@@ -105,16 +105,21 @@ const RootStackScreen = () => {
         ) : (
         <RootStack.Screen name="AuthStackScreen" component={AuthStackScreen} />
         )}
-        <RootStack.Screen name="Gallery" component={GalleryScreen} options={{ animationEnabled: true, cardStyle: { backgroundColor: 'rgba(0, 0, 0, 0)', }, }}/>
+        <RootStack.Screen name="Gallery" component={GalleryScreen} options={{ 
+          animationEnabled: true, 
+          cardStyle: { 
+            backgroundColor: 'black', 
+          }, 
+        }}/>
     </RootStack.Navigator>
     );
 };
 
 export default () => {
 
-    return (
-    <NavigationContainer>
-        <RootStackScreen />
-    </NavigationContainer>
-    );
+  return (
+  <NavigationContainer>
+      <RootStackScreen />
+  </NavigationContainer>
+  );
 };

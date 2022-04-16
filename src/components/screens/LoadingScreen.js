@@ -1,11 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions} from 'react-native';
+import logo from '../../graphics/Values_logo.png';
+
+
+const WIDTH = Dimensions.get("window").width;
+const HEIGHT = Dimensions.get("window").height;
 
 const LoadingScreen = () => {
 
     return (
         <View style={styles.pageContainer}>
-            <Text>Loading Screen</Text>
+          <View style={styles.logo}>
+            <Image 
+              source={logo}  
+              resizeMode='contain' 
+            />
+            <Text>Loading...</Text>
+          </View>  
         </View>
     );
 }
@@ -20,12 +31,12 @@ const styles = StyleSheet.create({
       flex: 1,
       width: '100%'
     },
-    topNavigation: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      width: '100%',
-      height: '15%',
-      padding: 10
+    logo: {
+      flex: 1,
+      width: WIDTH * .8,
+      height: HEIGHT * .8,
+      justifyContent: 'center',
+      alignItems: 'center',
     }
   });
 

@@ -17,10 +17,10 @@ const GalleryScreen = () => {
   const route = useRoute();
   const GalleryisFocused = useIsFocused();
 
-  const { images, scrollToIndex, } = route.params;
+  const { images } = route.params;
 
   useEffect(() => {
-    imagesRef.current?.scrollTo({x: WIDTH * scrollToIndex, animated: false});
+    imagesRef.current?.scrollTo({x: WIDTH * activeImg, animated: false});
   }, [GalleryisFocused]);
 
   onchange = ({nativeEvent}) => {
