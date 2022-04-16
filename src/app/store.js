@@ -7,4 +7,5 @@ export default configureStore({
     activeImg: activeImgReducer,
     user: userAuthReducer
   }
+  
 })

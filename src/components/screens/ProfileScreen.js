@@ -5,20 +5,20 @@ import { Auth } from 'aws-amplify';
 import { useSelector, useDispatch, } from 'react-redux';
 import { signOutUser } from '../../features/counter/userAuthSlice';
 
-const dispatch = useDispatch();
-
-const onSignOut = async () => {
-  try {
-      await Auth.signOut();
-      dispatch(signOutUser());
-  } catch (error) {
-      Alert.alert('error signing out: ', error.message);
-      return;
-  }
-  Alert.alert('Sign Out Successful!');
-}
-
 const ProfileScreen = () => {
+
+  const dispatch = useDispatch();
+
+  const onSignOut = async () => {
+    try {
+        await Auth.signOut();
+        dispatch(signOutUser());
+    } catch (error) {
+        Alert.alert('error signing out: ', error.message);
+        return;
+    }
+    Alert.alert('Sign Out Successful!');
+  }
 
   return (
       <SafeAreaView style={styles.pageContainer}>

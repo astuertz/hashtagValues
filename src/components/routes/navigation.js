@@ -2,6 +2,8 @@ import React, { useState, useEffect, } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useSelector } from 'react-redux';
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeScreen from '../screens/HomeScreen';
@@ -82,12 +84,13 @@ const RootStack = createNativeStackNavigator();
 const RootStackScreen = () => {
 
     const [isLoading, setIsLoading] = useState(true);
-    const [user, setUser] = useState(null);
+    //const [user, setUser] = useState(null);
+    const user = useSelector((state) => state.user.value);
 
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(!isLoading);
-            setUser('user');
+            //setUser('user');
         }, 2500)
     }, []);
 

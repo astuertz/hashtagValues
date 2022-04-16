@@ -32,8 +32,9 @@ const SignIn = () => {
   const onPressSignIn = async () => {
     if (email.length < 1 || password.length < 1) return Alert.alert('no input', 'please input an email and password to log in.');
     try {
-      const u = await Auth.signIn(email, password);
-      dispatch(validateUser(u));
+      const user = await Auth.signIn(email, password);
+      dispatch(validateUser(true));
+      console.log(user);
     } catch(e) {
       Alert.alert('Login Failed!', e.message);
       return;
