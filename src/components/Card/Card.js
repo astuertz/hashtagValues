@@ -42,7 +42,7 @@ const Card = (props) => {
 
   useEffect(() => {
     translateImagesX.value = activeImg * -WIDTH;
-  }, [cardIsFocused]);
+  }, [activeImg]);
 
   onRight = () => {
     if (activeImg == images.length - 1) return;

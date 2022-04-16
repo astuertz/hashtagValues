@@ -126,15 +126,15 @@ const AnimatedStack = () => {
   const nopeIcon = (
       <Entypo
         name="cross"
-        size={40}
-        color={'black'}
+        size={80}
+        color={'white'}
       />
   );
 
   const likeIcon = (
       <MaterialCommunityIcons
         name="heart"
-        size={30}
+        size={60}
         color={'white'}
       />
   );
@@ -156,42 +156,38 @@ const AnimatedStack = () => {
     opacity: interpolate(translateCardX.value, [-hiddenTranslateX, 0, hiddenTranslateX], [1, 0.7, 1])
   }),[translateCardX]);
 
-  const renderEmptyifprofileData = (
-    profileData ? (
-      <View style={styles.nextCardContainer} >
-        <Empty />
-      </View>
-    ) : (
-      null
-    )
+  const renderEmptyonBottom = (
+    <View style={{position: 'absolute'}}><Empty reset={setCurrentProfile} /></View>
   );
   
 
   return (
     <GestureHandlerRootView>
       <View style={styles.pagecontainer}>
+        {renderEmptyonBottom}
         {nextProfileData ? (
           <Animated.View style={[styles.nextCardContainer, nextCardStyle]} >
             <Card profileData={nextProfileData} />
           </Animated.View>
         ) : (
-          renderEmptyifprofileData
+          null
         )}
+        {profileData ? (
         <PanGestureHandler onGestureEvent={gestureHandler}>
           <Animated.View style={[styles.animatedCard, animatedCardStyle]}>
             <Animated.View style={[styles.likeIcons, {backgroundColor: "#f03737",}, likeStyle]} >
               {likeIcon}
             </Animated.View>
-            <Animated.View style={[styles.likeIcons, {backgroundColor: "#e9f3ff",}, nopeStyle]} >
+            <Animated.View style={[styles.likeIcons, {backgroundColor: 'black',}, nopeStyle]} >
               {nopeIcon}
             </Animated.View>
-            {profileData ? (
               <Card profileData={profileData} />
-            ) : ( 
-              <Empty reset={setCurrentProfile} />
-            )}
+            
           </Animated.View>
         </PanGestureHandler>
+        ) : ( 
+          null
+        )}
       </View>
     </GestureHandlerRootView>
   )
@@ -222,9 +218,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   likeIcons: {
-    height: 50, 
-    width: 50, 
-    borderRadius: 25, 
+    height: 100, 
+    width: 100, 
+    borderRadius: 50, 
     justifyContent: 'center', 
     alignItems: 'center', 
     borderColor: 'black',

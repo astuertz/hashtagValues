@@ -35,7 +35,7 @@ const ProfileView = () => {
 
   useEffect(() => {
     imagesRef.current?.scrollTo({x: WIDTH * activeImg, animated: false});
-  }, [profileViewisFocused]);
+  }, [activeImg]);
 
   onchange = ({nativeEvent}) => {
     if (!nativeEvent) return;

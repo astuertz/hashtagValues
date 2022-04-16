@@ -2,7 +2,9 @@ import React, { useState, useEffect, } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useSelector } from 'react-redux';
+import { Auth } from 'aws-amplify';
+import { useSelector, useDispatch, } from 'react-redux';
+import { validateUser } from '../../features/counter/userAuthSlice';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -83,39 +85,49 @@ const AuthStackScreen = () => (
 const RootStack = createNativeStackNavigator();
 const RootStackScreen = () => {
 
-    const [isLoading, setIsLoading] = useState(true);
-    //const [user, setUser] = useState(null);
-    const user = useSelector((state) => state.user.value);
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-        setTimeout(() => {
-            setIsLoading(!isLoading);
-            //setUser('user');
-        }, 2500)
-    }, []);
+  const [isLoading, setIsLoading] = useState(true);
+  //const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user.value);
 
-    return (
+  const getAuth = async () => {
+    u = await Auth.currentAuthenticatedUser();
+    return u;
+  }
 
-    <RootStack.Navigator screenOptions={{ 
-        animationEnabled: false, 
-        headerShown: false, 
-        presentation: 'modal',
-        }}>
-        {isLoading ? (
-        <RootStack.Screen name="LoadingScreen" component={LoadingScreen} /> 
-        ) : user ? (
-        <RootStack.Screen name="AppTabs" component={AppTabsScreen} /> 
-        ) : (
-        <RootStack.Screen name="AuthStackScreen" component={AuthStackScreen} />
-        )}
-        <RootStack.Screen name="Gallery" component={GalleryScreen} options={{ 
-          animationEnabled: true, 
-          cardStyle: { 
-            backgroundColor: 'black', 
-          }, 
-        }}/>
-    </RootStack.Navigator>
-    );
+  useEffect(() => {
+      setTimeout(() => {
+          setIsLoading(!isLoading);
+          u = getAuth();
+          if (u) {
+            dispatch(validateUser(true));
+          }
+      }, 2500)
+  }, []);
+
+  return (
+
+  <RootStack.Navigator screenOptions={{ 
+      animationEnabled: false, 
+      headerShown: false, 
+      presentation: 'modal',
+      }}>
+      {isLoading ? (
+      <RootStack.Screen name="LoadingScreen" component={LoadingScreen} /> 
+      ) : user ? (
+      <RootStack.Screen name="AppTabs" component={AppTabsScreen} /> 
+      ) : (
+      <RootStack.Screen name="AuthStackScreen" component={AuthStackScreen} />
+      )}
+      <RootStack.Screen name="Gallery" component={GalleryScreen} options={{ 
+        animationEnabled: true, 
+        cardStyle: { 
+          backgroundColor: 'black', 
+        }, 
+      }}/>
+  </RootStack.Navigator>
+  );
 };
 
 export default () => {
