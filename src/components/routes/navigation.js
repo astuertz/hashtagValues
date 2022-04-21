@@ -92,17 +92,20 @@ const RootStackScreen = () => {
   const user = useSelector((state) => state.user.value);
 
   const getAuth = async () => {
-    u = await Auth.currentAuthenticatedUser();
-    return u;
+    try {
+      let u = await Auth.currentAuthenticatedUser();
+      dispatch(validateUser(true));
+    } catch {
+      return;
+    }
   }
 
   useEffect(() => {
       setTimeout(() => {
           setIsLoading(!isLoading);
-          u = getAuth();
-          if (u) {
-            dispatch(validateUser(true));
-          }
+          getAuth();
+            //dispatch(validateUser(true));
+            //setUser(u);
       }, 2500)
   }, []);
 

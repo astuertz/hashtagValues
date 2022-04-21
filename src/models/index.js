@@ -4,7 +4,8 @@ import { schema } from './schema';
 
 const Genders = {
   "MALE": "MALE",
-  "FEMALE": "FEMALE"
+  "FEMALE": "FEMALE",
+  "OTHER": "OTHER"
 };
 
 const { Match, User } = initSchema(schema);

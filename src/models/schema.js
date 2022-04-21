@@ -150,6 +150,155 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "orientation": {
+                    "name": "orientation",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "relationshiptype": {
+                    "name": "relationshiptype",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "relationshipstatus": {
+                    "name": "relationshipstatus",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "height": {
+                    "name": "height",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "bodytype": {
+                    "name": "bodytype",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "ethnicity": {
+                    "name": "ethnicity",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "religio": {
+                    "name": "religio",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "zodiac": {
+                    "name": "zodiac",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "political": {
+                    "name": "political",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "employment": {
+                    "name": "employment",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "education": {
+                    "name": "education",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "language": {
+                    "name": "language",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "diet": {
+                    "name": "diet",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "smoking": {
+                    "name": "smoking",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "drinking": {
+                    "name": "drinking",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "druguse": {
+                    "name": "druguse",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "kids": {
+                    "name": "kids",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "pets": {
+                    "name": "pets",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "typeofdating": {
+                    "name": "typeofdating",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "hashtags": {
+                    "name": "hashtags",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "hashtagweight": {
+                    "name": "hashtagweight",
+                    "isArray": true,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -198,10 +347,11 @@ export const schema = {
             "name": "Genders",
             "values": [
                 "MALE",
-                "FEMALE"
+                "FEMALE",
+                "OTHER"
             ]
         }
     },
     "nonModels": {},
-    "version": "7a960e2fbd4fef38dc7fb433d7820c1f"
+    "version": "eb118737e468c8acccedf3082cb03859"
 };
