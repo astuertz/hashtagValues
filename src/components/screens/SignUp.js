@@ -40,8 +40,9 @@ const SignUp = () => {
   
   const onPressSignUp = async () => {
     try {
-      const { user } = await Auth.signUp({username: email, password: password});
-      navigation.push("EmailConfirm", {user});
+      await Auth.signUp({username: email, password: password});
+      dispatch(validateUser(true));
+      navigation.push("EmailConfirm");
     } catch (error) {
         Alert.alert('error signing up:', error.message);
         return;
@@ -73,99 +74,28 @@ const SignUp = () => {
       style={styles.textInput}
       secureTextEntry={true} 
     />
-    <TextInput 
-      placeholder='name'
-      value={name}
-      onChangeText={setName}
-      style={styles.textInput}
-    />
-    <TextInput 
-      style={styles.textInput}
-      placeholder="Bio..."
-      multiline={true}
-      numberOfLines={3}
-      value={bio}
-      onChangeText={setBio}
-    />
-    <TextInput 
-      placeholder='orientation'
-      value={orientation}
-      onChangeText={setOrientation}
-      style={styles.textInput}
-    />
-    <View style={{justifyContent: 'flex-start', alignItems: 'flex-start',}}>
-      <Text>GENDER:</Text>
-      <Picker
-        style={{ height: 50, width: 150, borderRadius: 20, backgroundColor: 'white', marginHorizontal: 10, marginVertical: 15,}}
-        selectedValue={gender}
-        onValueChange={(itemValue, itemIndex) =>
-          setGender(itemValue)
-      }>
-        <Picker.Item label="Male" value="MALE" />
-        <Picker.Item label="Female" value="FEMALE" />
-        <Picker.Item label="Other" value="OTHER" />
-      </Picker>
-    </View>
-    <View style={{justifyContent: 'flex-start', alignItems: 'flex-start',}}>
-      <Text>LOOKING FOR:</Text>
-      <Picker
-        style={{ height: 50, width: 150, borderRadius: 20, backgroundColor: 'white', marginHorizontal: 10, marginVertical: 15,}}
-        selectedValue={lookingfor}
-        onValueChange={(itemValue, itemIndex) =>
-            setLookingFor(itemValue)
-      }>
-        <Picker.Item label="Female" value="FEMALE" />
-        <Picker.Item label="Male" value="MALE" />
-        <Picker.Item label="Other" value="OTHER" />
-      </Picker>
-    </View>
-    <View style={{justifyContent: 'flex-start', alignItems: 'flex-start',}}>
-      <Text>DESIRED RELATOINSHIP:</Text>
-      <Picker
-        style={{ height: 50, width: 150, borderRadius: 20, backgroundColor: 'white', marginHorizontal: 10, marginVertical: 15,}}
-        selectedValue={relationshiptype}
-        onValueChange={(itemValue, itemIndex) =>
-            setRelationshipType(itemValue)
-      }>
-        <Picker.Item label="Long-Term" value="LONGTERM" />
-        <Picker.Item label="Friends" value="FRIENDS" />
-        <Picker.Item label="Hookup" value="HOOKUP" />
-      </Picker>
-    </View>
-    <View style={{justifyContent: 'flex-start', alignItems: 'flex-start',}}>
-      <Text>RELATIONSHIP STATUS:</Text>
-      <Picker
-        style={{ height: 50, width: 150, borderRadius: 20, backgroundColor: 'white', marginHorizontal: 10, marginVertical: 15,}}
-        selectedValue={relationshipstatus}
-        onValueChange={(itemValue, itemIndex) =>
-            setRelationshipStatus(itemValue)
-      }>
-        <Picker.Item label="Single" value="SINGLE" />
-        <Picker.Item label="Partnered" value="PARTNERED" />
-      </Picker>
-    </View>
     <TouchableOpacity
       onPress={onPressSignUp}  
       style={styles.button} 
     >
       <Text style={styles.buttonText}>Sign Up</Text>
     </TouchableOpacity>
-    <View style={{height: HEIGHT * .3,}} />
     </>
   );
 
   return (
 
+    <TouchableWithoutFeedback 
+      onPress={() => Keyboard.dismiss()}>
       <View style={styles.pageContainer}>
         <View style={styles.logo}>
           {renderLogo}
         </View>
         <View style={styles.inputContainer} >
-          <ScrollView style={{width: '100%',}}>
-            {inputElements}
-          </ScrollView>
+          {inputElements}
         </View>     
-      </View> 
+      </View>
+    </TouchableWithoutFeedback>
 
 
   );
@@ -176,7 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
-    width: WIDTH,
+    width: '100%',
     height: '100%',
     backgroundColor: '#cadced',
   },
@@ -186,8 +116,6 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
-    padding: 10,
   },
   logo: {
     flex: 1,

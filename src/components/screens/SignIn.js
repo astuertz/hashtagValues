@@ -24,11 +24,12 @@ const HEIGHT = Dimensions.get("window").height;
 const SignIn = () => {
 
   const user = useSelector((state) => state.user.value);
+  const isConfirmed = useSelector((state) => state.user.isConfirmed);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (user) {
+    if (user && !isConfirmed) {
       Alert.alert('User Signed In But Not Confirmed','Please check your email for the code.');
       navigation.push("EmailConfirm");
     }

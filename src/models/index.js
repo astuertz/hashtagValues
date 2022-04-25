@@ -5,6 +5,8 @@ import { schema } from './schema';
 const Genders = {
   "MALE": "MALE",
   "FEMALE": "FEMALE",
+  "TRANSWOMAN": "TRANSWOMAN",
+  "TRANSMAN": "TRANSMAN",
   "OTHER": "OTHER"
 };
 

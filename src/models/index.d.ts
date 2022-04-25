@@ -3,6 +3,8 @@ import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplif
 export enum Genders {
   MALE = "MALE",
   FEMALE = "FEMALE",
+  TRANSWOMAN = "TRANSWOMAN",
+  TRANSMAN = "TRANSMAN",
   OTHER = "OTHER"
 }
 
@@ -36,27 +38,13 @@ export declare class User {
   readonly gender: Genders | keyof typeof Genders;
   readonly lookingfor: Genders | keyof typeof Genders;
   readonly sub: string;
-  readonly orientation: string;
-  readonly relationshiptype: string;
-  readonly relationshipstatus: string;
   readonly height?: string | null;
   readonly bodytype?: string | null;
-  readonly ethnicity?: string | null;
-  readonly religio?: string | null;
-  readonly zodiac?: string | null;
-  readonly political?: string | null;
-  readonly employment?: string | null;
-  readonly education?: string | null;
-  readonly language?: string | null;
-  readonly diet?: string | null;
-  readonly smoking?: string | null;
-  readonly drinking?: string | null;
-  readonly druguse?: string | null;
-  readonly kids?: string | null;
-  readonly pets?: string | null;
-  readonly typeofdating?: string | null;
+  readonly language: string;
+  readonly kids: string;
   readonly hashtags?: (string | null)[] | null;
   readonly hashtagweight?: (number | null)[] | null;
+  readonly hashtaglabels?: (string | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<User, UserMetaData>);

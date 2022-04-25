@@ -1,13 +1,38 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, Button, Modal} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimatedStack from '../AnimatedStack/AnimatedStack';
+import { useIsFocused } from '@react-navigation/native';
+import { DataStore } from 'aws-amplify';
+import { useSelector, useDispatch, } from 'react-redux';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
+
+  const homeIsFocused = useIsFocused();
+  const [profileIsConfig, setProfileIsConfig] = useState(false);
+  const sub = useSelector((state) => state.user.sub);
+
+  const queryUser = async () => {
+    if (!sub) return;
+    let dbUser = await DataStore.query(User, u => u.sub === sub);
+    if (dbUser.length < 0) return;
+    setProfileIsConfig(true);
+  }
+
+  useEffect(() => {
+    queryUser();
+  }, [homeIsFocused]);
 
   return (
       <SafeAreaView style={styles.pageContainer}>
-        <AnimatedStack />      
+        {profileIsConfig ? (
+          <AnimatedStack />
+        ) : (
+          <>
+          <Text>Profile is not set up!</Text>
+          <Button title="Set Up Your Profile" onPress={() => navigation.navigate("Profile")} />
+          </>
+        )}
       </SafeAreaView>
   );
 };

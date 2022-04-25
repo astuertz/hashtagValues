@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Auth } from 'aws-amplify';
 import { useSelector, useDispatch, } from 'react-redux';
-import { validateUser, confirmUser } from '../../features/counter/userAuthSlice';
+import { validateUser, confirmUser, updateSub } from '../../features/counter/userAuthSlice';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -103,6 +103,8 @@ const RootStackScreen = () => {
     try {
       let u = await Auth.currentAuthenticatedUser();
       dispatch(validateUser(true));
+      let s = u.attributes.sub;
+      dispatch(updateSub(s));
       if (u.attributes.email_verified) {
         dispatch(confirmUser());
       }

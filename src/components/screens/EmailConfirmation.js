@@ -40,13 +40,12 @@ const EmailConfirmation = () => {
   useEffect(() => {
       getAuth();
       if (user) {
-        setUsername(user.username);
+        setUsername(user.attributes.email);
       }
   }, [emailIsFocused]);
 
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
 
   const onPressConfirmCode = async () => {
