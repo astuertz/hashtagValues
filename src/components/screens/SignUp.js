@@ -38,20 +38,15 @@ const SignUp = () => {
   const [relationshiptype, setRelationshipType] = useState("LONGTERM");
   const [relationshipstatus, setRelationshipStatus] = useState("SINGLE");
   
-
-  const isValid = () => {
-    return email && password && name && bio && gender && lookingfor && orientation && relationshiptype && relationshipstatus;
-  }
-
   const onPressSignUp = async () => {
-    if (!isValid) return Alert.alert('Please Complete All Fields!');
     try {
       const { user } = await Auth.signUp({username: email, password: password});
+      navigation.push("EmailConfirm", {user});
     } catch (error) {
         Alert.alert('error signing up:', error.message);
         return;
     }
-    Alert.alert('Sign Up Successful!');
+    Alert.alert('Sign Up Successful!','Please check your email for confirmation code!');
     return;
   }
 

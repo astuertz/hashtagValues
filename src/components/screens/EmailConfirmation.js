@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { 
   View, 
   Text, 
@@ -13,34 +13,46 @@ import {
   Alert,
 } from 'react-native';
 import logo from '../../graphics/Values_logo.png';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Auth } from 'aws-amplify';
 import { useSelector, useDispatch, } from 'react-redux';
-import { validateUser } from '../../features/counter/userAuthSlice';
+import { validateUser, confirmUser } from '../../features/counter/userAuthSlice';
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
-const SignIn = () => {
+const EmailConfirmation = () => {
 
-  const user = useSelector((state) => state.user.value);
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
+  const emailIsFocused = useIsFocused();
+  const [user, setUser] = useState(null);
+  const [username, setUsername] = useState(null);
+
+  const getAuth = async () => {
+    try {
+      let u = await Auth.currentAuthenticatedUser();
+      setUser(u);
+    } catch {
+      return;
+    }
+  }
 
   useEffect(() => {
-    if (user) {
-      Alert.alert('User Signed In But Not Confirmed','Please check your email for the code.');
-      navigation.push("EmailConfirm");
-    }
-  }, []);
+      getAuth();
+      if (user) {
+        setUsername(user.username);
+      }
+  }, [emailIsFocused]);
+
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [code, setCode] = useState('');
 
-  const onPressSignIn = async () => {
-    if (email.length < 1 || password.length < 1) return Alert.alert('no input', 'please input an email and password to log in.');
+  const onPressConfirmCode = async () => {
     try {
-      const user = await Auth.signIn(email, password);
+      await Auth.confirmSignUp(username, code);  
+      dispatch(confirmUser());
       dispatch(validateUser(true));
     } catch(e) {
       Alert.alert('Login Failed!', e.message);
@@ -62,34 +74,23 @@ const SignIn = () => {
     <>
     <TextInput 
       placeholder='email'
-      value={email}
-      onChangeText={setEmail}
+      value={username}
+      onChangeText={setUsername}
       style={styles.textInput} 
     />
     <TextInput 
-      placeholder='password'
-      value={password}
-      onChangeText={setPassword}
+      placeholder='code'
+      value={code}
+      onChangeText={setCode}
       style={styles.textInput}
-      secureTextEntry={true} 
+      keyboardType='numeric'
     />
     <TouchableOpacity
-      onPress={onPressSignIn}  
+      onPress={onPressConfirmCode}  
       style={styles.button} 
     >
-      <Text style={styles.buttonText}>Sign In</Text>
+      <Text style={styles.buttonText}>Send Code</Text>
     </TouchableOpacity>
-    <Text 
-      style={styles.hyperlink} 
-    >Forgot Password?</Text>
-    <Text 
-      style={styles.hyperlink} 
-      onPress={() => navigation.push("SignUp")} 
-    >Sign Up</Text>
-    <Text 
-      style={styles.hyperlink} 
-      onPress={() => navigation.push("EmailConfirm")} 
-    >Confirm Code</Text>
     </>
   );
 
@@ -186,4 +187,4 @@ const styles = StyleSheet.create({
   },
 });
 
-  export default SignIn;
+  export default EmailConfirmation;

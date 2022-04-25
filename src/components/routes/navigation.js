@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Auth } from 'aws-amplify';
 import { useSelector, useDispatch, } from 'react-redux';
-import { validateUser } from '../../features/counter/userAuthSlice';
+import { validateUser, confirmUser } from '../../features/counter/userAuthSlice';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -16,6 +16,7 @@ import LoadingScreen from '../screens/LoadingScreen';
 import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
 import GalleryScreen from '../screens/GalleryScreen';
+import EmailConfirmation from '../screens/EmailConfirmation';
 
 const HomeScreenStack = createNativeStackNavigator();
 const HomeScreenStackScreen = () => (
@@ -73,28 +74,38 @@ const AppTabsScreen = () => (
 );
 
 const AuthStack = createNativeStackNavigator();
-const AuthStackScreen = () => (
+const AuthStackScreen = () => {
+
+  const user = useSelector((state) => state.user.value);
+  const isConfirmed = useSelector((state) => state.user.isConfirmed);
+  
+  return (
     <AuthStack.Navigator screenOptions={{ 
       headerShown: false, 
       }}>
         <AuthStack.Screen name="SignIn" component={SignIn} />
         <AuthStack.Screen name="SignUp" component={SignUp} />
+        <AuthStack.Screen name="EmailConfirm" component={EmailConfirmation} />
     </AuthStack.Navigator>
-);
+  );
+};
 
 const RootStack = createNativeStackNavigator();
 const RootStackScreen = () => {
 
+  const user = useSelector((state) => state.user.value);
+  const isConfirmed = useSelector((state) => state.user.isConfirmed);
   const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(true);
-  //const [user, setUser] = useState(null);
-  const user = useSelector((state) => state.user.value);
 
   const getAuth = async () => {
     try {
       let u = await Auth.currentAuthenticatedUser();
       dispatch(validateUser(true));
+      if (u.attributes.email_verified) {
+        dispatch(confirmUser());
+      }
     } catch {
       return;
     }
@@ -104,8 +115,6 @@ const RootStackScreen = () => {
       setTimeout(() => {
           setIsLoading(!isLoading);
           getAuth();
-            //dispatch(validateUser(true));
-            //setUser(u);
       }, 2500)
   }, []);
 
@@ -118,7 +127,7 @@ const RootStackScreen = () => {
       }}>
       {isLoading ? (
       <RootStack.Screen name="LoadingScreen" component={LoadingScreen} /> 
-      ) : user ? (
+      ) : user && isConfirmed ? (
       <RootStack.Screen name="AppTabs" component={AppTabsScreen} /> 
       ) : (
       <RootStack.Screen name="AuthStackScreen" component={AuthStackScreen} />

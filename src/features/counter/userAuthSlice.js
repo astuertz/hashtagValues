@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit'
 export const userAuthSlice = createSlice({
   name: 'user',
   initialState: {
-    value: null
+    value: null,
+    isConfirmed: false
   },
   reducers: {
     validateUser: (state, action) => {
@@ -12,9 +13,12 @@ export const userAuthSlice = createSlice({
     signOutUser: (state) => {
       state.value = null
     },
+    confirmUser: (state) => {
+      state.isConfirmed = true
+    },
   }
 })
 
-export const { validateUser, signOutUser } = userAuthSlice.actions
+export const { validateUser, signOutUser, confirmUser } = userAuthSlice.actions
 
 export default userAuthSlice.reducer
