@@ -33,10 +33,10 @@ export declare class Match {
 export declare class User {
   readonly id: string;
   readonly name: string;
-  readonly image?: string | null;
+  readonly image?: (string | null)[] | null;
   readonly bio: string;
   readonly gender: Genders | keyof typeof Genders;
-  readonly lookingfor: Genders | keyof typeof Genders;
+  readonly lookingfor: Genders[] | keyof typeof Genders;
   readonly sub: string;
   readonly height?: string | null;
   readonly bodytype?: string | null;

@@ -113,10 +113,11 @@ export const schema = {
                 },
                 "image": {
                     "name": "image",
-                    "isArray": false,
+                    "isArray": true,
                     "type": "String",
                     "isRequired": false,
-                    "attributes": []
+                    "attributes": [],
+                    "isArrayNullable": true
                 },
                 "bio": {
                     "name": "bio",
@@ -136,12 +137,13 @@ export const schema = {
                 },
                 "lookingfor": {
                     "name": "lookingfor",
-                    "isArray": false,
+                    "isArray": true,
                     "type": {
                         "enum": "Genders"
                     },
                     "isRequired": true,
-                    "attributes": []
+                    "attributes": [],
+                    "isArrayNullable": false
                 },
                 "sub": {
                     "name": "sub",
@@ -258,5 +260,5 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "version": "9071d5f9d277a4629d2a524ba61d506e"
+    "version": "5f1accab84be352fe8381e06d8f56086"
 };

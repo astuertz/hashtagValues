@@ -17,6 +17,8 @@ import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
 import GalleryScreen from '../screens/GalleryScreen';
 import EmailConfirmation from '../screens/EmailConfirmation';
+import ProfileSetup from '../screens/ProfileSetup';
+import { User } from '../../models';
 
 const HomeScreenStack = createNativeStackNavigator();
 const HomeScreenStackScreen = () => (
@@ -24,6 +26,14 @@ const HomeScreenStackScreen = () => (
         <HomeScreenStack.Screen name="Home" component={HomeScreen} />
         <HomeScreenStack.Screen name="ProfileView" component={ProfileView} />
     </HomeScreenStack.Navigator>
+);
+
+const ProfileScreenStack = createNativeStackNavigator();
+const ProfileScreenStackScreen = () => (
+    <ProfileScreenStack.Navigator screenOptions={{ headerTransparent: true, title: null, headerShown: false,}}>
+        <ProfileScreenStack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <ProfileScreenStack.Screen name="ProfileSetup" component={ProfileSetup} />
+    </ProfileScreenStack.Navigator>
 );
 
 const AppTabs = createBottomTabNavigator();
@@ -59,7 +69,7 @@ const AppTabsScreen = () => (
         />
         <AppTabs.Screen 
         name="Profile" 
-        component={ProfileScreen} 
+        component={ProfileScreenStackScreen} 
         options={{
         tabBarIcon: (props) => (
           <MaterialCommunityIcons
@@ -75,9 +85,6 @@ const AppTabsScreen = () => (
 
 const AuthStack = createNativeStackNavigator();
 const AuthStackScreen = () => {
-
-  const user = useSelector((state) => state.user.value);
-  const isConfirmed = useSelector((state) => state.user.isConfirmed);
   
   return (
     <AuthStack.Navigator screenOptions={{ 

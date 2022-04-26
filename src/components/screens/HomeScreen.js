@@ -3,8 +3,9 @@ import {View, Text, StyleSheet, Button, Modal} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimatedStack from '../AnimatedStack/AnimatedStack';
 import { useIsFocused } from '@react-navigation/native';
-import { DataStore } from 'aws-amplify';
 import { useSelector, useDispatch, } from 'react-redux';
+import { DataStore } from '@aws-amplify/datastore';
+import { User } from '../../models';
 
 const HomeScreen = ({navigation}) => {
 
@@ -14,9 +15,13 @@ const HomeScreen = ({navigation}) => {
 
   const queryUser = async () => {
     if (!sub) return;
-    let dbUser = await DataStore.query(User, u => u.sub === sub);
-    if (dbUser.length < 0) return;
-    setProfileIsConfig(true);
+    let foundUser = await DataStore.query(User, u => u.sub("eq", sub));
+    if (foundUser) {
+      setProfileIsConfig(true);
+    }
+    return;
+    //if (dbUser.length == 0) return false;
+    //return true;
   }
 
   useEffect(() => {
