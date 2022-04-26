@@ -15,8 +15,8 @@ const HomeScreen = ({navigation}) => {
 
   const queryUser = async () => {
     if (!sub) return;
-    let foundUser = await DataStore.query(User, u => u.sub("eq", sub));
-    if (foundUser) {
+    const foundUser = await DataStore.query(User, u => u.sub("eq", sub));
+    if (foundUser[0]) {
       setProfileIsConfig(true);
     }
     return;

@@ -1,7 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Navigation from './src/components/routes/navigation';
-import Amplify from 'aws-amplify';
+import Amplify from "@aws-amplify/core";
+import {DataStore} from "@aws-amplify/datastore";
 import config from './src/aws-exports';
 import { withAuthenticator } from 'aws-amplify-react-native';
 
@@ -11,6 +12,8 @@ Amplify.configure({
     disabled: true,
   },
 });
+
+DataStore.configure(config);
 
 const App = () => {
 

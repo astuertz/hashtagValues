@@ -20,13 +20,13 @@ import { signOutUser } from '../../features/counter/userAuthSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useIsFocused } from '@react-navigation/native';
+import { DataStore } from '@aws-amplify/datastore';
 import { User } from '../../models';
-import { DataStore } from 'aws-amplify';
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
-const ProfileSetup = () => {
+const ProfileSetup = ({ navigation }) => {
 
   const dispatch = useDispatch();
   
@@ -42,12 +42,45 @@ const ProfileSetup = () => {
   const [bio, setBio] = useState('');
   const [images, setImages] = useState(['','','','','','']);
   const [numOfImages, setNumOfImages] = useState(0);
+  const [dbUser, setDBUser] = useState(null);
 
   const profileSetupIsFocused = useIsFocused();
   const sub = useSelector((state) => state.user.sub);
 
+  const findUser = async () => {
+    let u = await DataStore.query(User, u => u.sub("eq", sub));
+    if (!u[0]) return;
+    setName(u[0].name);
+    setGender(u[0].gender);
+    let lf = u[0].lookingfor;
+    for (i=0; i < lf.length; i++) {
+      if (lf[i] == 'MALE') {
+        setLookingFor([true,lookingfor[1],lookingfor[2],lookingfor[3],lookingfor[4]]);
+      }
+      if (lf[i] == 'FEMALE') {
+        setLookingFor([lookingfor[0],true,lookingfor[2],lookingfor[3],lookingfor[4]]);
+      }
+      if (lf[i] == 'TRANSMALE') {
+        setLookingFor([lookingfor[0],lookingfor[1],true,lookingfor[3],lookingfor[4]]);
+      }
+      if (lf[i] == 'TRANSFEMALE') {
+        setLookingFor([lookingfor[0],lookingfor[1],lookingfor[2],true,lookingfor[4]]);
+      }
+      if (lf[i] == 'OTHER') {
+        setLookingFor([lookingfor[0],lookingfor[1],lookingfor[2],lookingfor[3],true]);
+      }
+    }
+    setHeight(u[0].height);
+    setBodyType(u[0].bodytype);
+    setHasKids(u[0].kids);
+    setLanguage(u[0].language);
+    setBio(u[0].bio);
+    return u[0];
+  }
+  
   useEffect(() => {
-    null;
+    let dbu = findUser();
+    setDBUser(dbu);
   },[profileSetupIsFocused]);
 
   const nameElement = (
@@ -444,8 +477,78 @@ const ProfileSetup = () => {
     return name && gender && lookingfor && height && bodyType && language && hasKids && bio;
   }
 
-  const onPressSave = () => {
+  const onPressSave = async () => {
     if (!isValid()) return Alert.alert('Please fill in all fields!');
+
+    let newImages = [''];
+
+    if (images[0] == '') {
+      newImages = ['https://st.depositphotos.com/2101611/3925/v/600/depositphotos_39258143-stock-illustration-businessman-avatar-profile-picture.jpg'];
+    } else {
+      for (i=0; i < numOfImages; i++) {
+        newImages[i] = images[i];
+      }
+    }
+
+    let lf = [''];
+    if (lookingfor[0]) {
+      lf.push('MALE');
+    }
+    if (lookingfor[1]) {
+      lf.push('FEMALE');
+    }
+    if (lookingfor[2]) {
+      lf.push('TRANSMAN');
+    }
+    if (lookingfor[3]) {
+      lf.push('TRANSWOMAN');
+    }
+    if (lookingfor[4]) {
+      lf.push('OTHER');
+    }
+    for (i=0; i < lf.length; i++) {
+      lf[i] = lf[i+1];
+    }
+    lf.pop();
+
+
+    if (!dbUser) {
+
+      await DataStore.save(
+        new User({
+        "name": name,
+        "image": newImages,
+        "bio": bio,
+        "gender": gender,
+        "lookingfor": lf,
+        "sub": sub,
+        "height": height,
+        "bodytype": bodyType,
+        "language": language,
+        "kids": hasKids,
+        "hashtags": [],
+        "hashtagweight": [],
+        "hashtaglabels": []
+      })
+    );
+  } else {
+    let dbUsers = await DataStore.query(User, u => u.sub("eq", sub));
+    let u = dbUsers[0];
+    await DataStore.save(User.copyOf(u, updated => {
+      updated.name = name;
+      updated.image = newImages;
+      updated.bio = bio;
+      updated.gender = gender;
+      updated.lookingfor = lf;
+      updated.height = height;
+      updated.bodytype = bodyType;
+      updated.language = language;
+      updated.kids = hasKids;
+  }));
+
+  }
+  Alert.alert('Profile Saved!');
+  navigation.pop();
   }
 
   const saveButton = (

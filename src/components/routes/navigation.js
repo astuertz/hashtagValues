@@ -19,6 +19,7 @@ import GalleryScreen from '../screens/GalleryScreen';
 import EmailConfirmation from '../screens/EmailConfirmation';
 import ProfileSetup from '../screens/ProfileSetup';
 import { User } from '../../models';
+import { DataStore } from '@aws-amplify/datastore';
 
 const HomeScreenStack = createNativeStackNavigator();
 const HomeScreenStackScreen = () => (
