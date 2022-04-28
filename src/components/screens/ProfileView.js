@@ -26,7 +26,7 @@ const ProfileView = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { name, images, bio, buttonsVisible, } = route.params;
+  const { name, images, bio, age, location, buttonsVisible, } = route.params;
   const activeImg = useSelector((state) => state.activeImg.value);
   const dispatch = useDispatch();
 
@@ -112,7 +112,7 @@ const ProfileView = () => {
   const textHeader = (
     <View style={{flex: 1,}}>
       <Text style={{fontSize: 20, fontWeight: "bold",}}>{name}</Text>
-      <Text style={{fontSize: 16,}}>Age: 42 ● Los Angeles, California</Text>
+      <Text style={{fontSize: 16,}}>Age: {age} ● {location}</Text>
     </View>
   );
 

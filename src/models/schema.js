@@ -200,6 +200,20 @@ export const schema = {
                     "attributes": [],
                     "isArrayNullable": true
                 },
+                "age": {
+                    "name": "age",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "location": {
+                    "name": "location",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -259,13 +273,6 @@ export const schema = {
         "Values": {
             "name": "Values",
             "fields": {
-                "label": {
-                    "name": "label",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "name": {
                     "name": "name",
                     "isArray": false,
@@ -283,5 +290,5 @@ export const schema = {
             }
         }
     },
-    "version": "1a37a50fbe2ec1dc7eb14fdb2b65ed7f"
+    "version": "be3949ccb957637c7c5372e5fdf459c4"
 };

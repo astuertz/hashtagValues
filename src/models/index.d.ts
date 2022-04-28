@@ -9,7 +9,6 @@ export enum Genders {
 }
 
 export declare class Values {
-  readonly label?: string | null;
   readonly name?: string | null;
   readonly weight?: number | null;
   constructor(init: ModelInit<Values>);
@@ -49,6 +48,8 @@ export declare class User {
   readonly kids: string;
   readonly hashtags?: (Values | null)[] | null;
   readonly values?: (Values | null)[] | null;
+  readonly age?: string | null;
+  readonly location: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<User, UserMetaData>);

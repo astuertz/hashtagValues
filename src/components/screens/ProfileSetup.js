@@ -36,6 +36,8 @@ const ProfileSetup = ({ navigation }) => {
   // lookingfor = [Male, Female, Trans Men, Trans Women, Other]
   const [lookingfor, setLookingFor] = useState([false, false, false, false, false]);
   const [height, setHeight] = useState('');
+  const [age, setAge] = useState(null);
+  const [location, setLocation] = useState(null);
   const [bodyType, setBodyType] = useState('NOCOMMENT');
   const [language, setLanguage] = useState('English');
   const [hasKids, setHasKids] = useState('NO');
@@ -78,6 +80,8 @@ const ProfileSetup = ({ navigation }) => {
     setDBUser(true);
     setImages(u[0].image);
     setNumOfImages(u[0].image.length);
+    setAge(u[0].age);
+    setLocation(u[0].location);
   }
   
   useEffect(() => {
@@ -96,6 +100,18 @@ const ProfileSetup = ({ navigation }) => {
     </>
   );
 
+  const locationElement = (
+    <>
+    <Text style={styles.plainText} >Where do you live?</Text>
+    <TextInput 
+      placeholder='location'
+      value={location}
+      onChangeText={setLocation}
+      style={styles.textInput} 
+    />
+    </>
+  );
+
   const heightElement = (
     <>
     <Text style={styles.plainText} >What is your height?</Text>
@@ -104,6 +120,19 @@ const ProfileSetup = ({ navigation }) => {
       value={height}
       onChangeText={setHeight}
       style={styles.textInput} 
+    />
+    </>
+  );
+
+  const ageElement = (
+    <>
+    <Text style={styles.plainText} >How old are you?</Text>
+    <TextInput 
+      placeholder='age'
+      value={age}
+      onChangeText={setAge}
+      style={styles.textInput} 
+      keyboardType='numeric'
     />
     </>
   );
@@ -532,6 +561,8 @@ const ProfileSetup = ({ navigation }) => {
         "bodytype": bodyType,
         "language": language,
         "kids": hasKids,
+        "age": parseInt(age),
+        "location": location,
       })
     );
   } else {
@@ -547,7 +578,8 @@ const ProfileSetup = ({ navigation }) => {
       updated.bodytype = bodyType;
       updated.language = language;
       updated.kids = hasKids;
-      updated.hashtags = [HASHTAGS];
+      updated.age = parseInt(age);
+      updated.location = location;
   }));
 
   }
@@ -567,9 +599,11 @@ const ProfileSetup = ({ navigation }) => {
   const inputElements = (
     <>
     {nameElement}
+    {locationElement}
     {genderElement}
     {lookingForElement}
     {heightElement}
+    {ageElement}
     {bodyTypeElement}
     {hasKidsElement}
     {languageElement}

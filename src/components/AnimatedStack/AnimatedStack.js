@@ -41,6 +41,16 @@ const AnimatedStack = () => {
       name: foundUser[0].name,
       images: foundUser[0].image,
       bio: foundUser[0].bio,
+      age: foundUser[0].age,
+      location: foundUser[0].location,
+      height: foundUser[0].height,
+      bodytype: foundUser[0].bodytype,
+      kids: foundUser[0].kids,
+      gender: foundUser[0].gender,
+      lookingfor: foundUser[0].lookingfor,
+      hashtags: foundUser[0].hashtags,
+      values: foundUser[0].values,
+      language: foundUser[0].language,
     };
     setProfileData(d);
   }
@@ -52,6 +62,16 @@ const AnimatedStack = () => {
       name: foundUser[0].name,
       images: foundUser[0].image,
       bio: foundUser[0].bio,
+      age: foundUser[0].age,
+      location: foundUser[0].location,
+      height: foundUser[0].height,
+      bodytype: foundUser[0].bodytype,
+      kids: foundUser[0].kids,
+      gender: foundUser[0].gender,
+      lookingfor: foundUser[0].lookingfor,
+      hashtags: foundUser[0].hashtags,
+      values: foundUser[0].values,
+      language: foundUser[0].language,
     };
     setNextProfileData(d);
   }

@@ -19,7 +19,7 @@ const HEIGHT = Dimensions.get("window").height;
 
 const Card = (props) => {
 
-  const { name, images, bio, } = props.profileData;
+  const { name, images, bio, age, location, } = props.profileData;
   const cardIsFocused = useIsFocused();
   const activeImg = useSelector((state) => state.activeImg.value);
   const dispatch = useDispatch();
@@ -28,6 +28,8 @@ const Card = (props) => {
     name: name,
     images: images,
     bio: bio,
+    age: age,
+    location: location,
     buttonsVisible: true,
     });
 
@@ -102,7 +104,7 @@ const Card = (props) => {
   const textHeader = (
     <View style={{flex: 1,}}>
       <Text style={{fontSize: 20, fontWeight: "bold",}}>{name}</Text>
-      <Text style={{fontSize: 16,}}>Age: 42 ● Los Angeles, California</Text>
+      <Text style={{fontSize: 16,}}>Age: {age} ● {location}</Text>
     </View>
   );
 

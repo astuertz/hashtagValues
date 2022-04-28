@@ -33,7 +33,17 @@ const ProfileScreen = ({ navigation }) => {
   const [images, setImages] = useState([]);
   const [bio, setBio] = useState('');
   const [name, setName] = useState('');
-
+  const [age, setAge] = useState(42);
+  const [location, setLocation] = useState('location');
+  const [height, setHeight] = useState(null);
+  const [bodytype, setBodyType] = useState(null);
+  const [kids, setKids] = useState(null);
+  const [gender, setGender] = useState(null);
+  const [lookingfor, setLookingFor] = useState(null);
+  const [hashtags, setHashtags] = useState(null);
+  const [values, setValues] = useState(null);
+  const [language, setLanguage] = useState(null);
+  
   const fetchUserData = async () => {
     let u = await DataStore.query(User, u => u.sub("eq", sub));
     if (!u[0]) return;
@@ -42,6 +52,16 @@ const ProfileScreen = ({ navigation }) => {
     setImages(u[0].image);
     setBio(u[0].bio);
     setName(u[0].name);
+    setAge(u[0].age);
+    setLocation(u[0].location);
+    setHeight(u[0].height);
+    setBodyType(u[0].bodytype);
+    setKids(u[0].kids);
+    setGender(u[0].gender);
+    setLookingFor(u[0].lookingfor);
+    setHashtags(u[0].hashtags);
+    setValues(u[0].values);
+    setLanguage(u[0].language);
   }
 
   useEffect(() => {
@@ -75,6 +95,16 @@ const ProfileScreen = ({ navigation }) => {
           name: name,
           images: images,
           bio: bio,
+          age: age,
+          location: location,
+          height: height,
+          bodytype: bodytype,
+          kids: kids,
+          gender: gender,
+          lookingfor: lookingfor,
+          hashtags: hashtags,
+          values: values,
+          language: language,
           buttonsVisible: false,
           })}
       >
