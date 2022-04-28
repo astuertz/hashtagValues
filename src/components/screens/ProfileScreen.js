@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View, 
   Text, 
@@ -11,11 +11,15 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useIsFocused } from '@react-navigation/native';
 import { Auth } from 'aws-amplify';
 import { useSelector, useDispatch, } from 'react-redux';
 import { signOutUser } from '../../features/counter/userAuthSlice';
+import { DataStore } from '@aws-amplify/datastore';
+import { User } from '../../models';
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -23,6 +27,26 @@ const HEIGHT = Dimensions.get("window").height;
 const ProfileScreen = ({ navigation }) => {
 
   const dispatch = useDispatch();
+  const sub = useSelector((state) => state.user.sub);
+  const profileScreenIsFocused = useIsFocused();
+  const [profPicture, setProfPicture] = useState('https://st.depositphotos.com/2101611/3925/v/600/depositphotos_39258143-stock-illustration-businessman-avatar-profile-picture.jpg');
+  const [images, setImages] = useState([]);
+  const [bio, setBio] = useState('');
+  const [name, setName] = useState('');
+
+  const fetchUserData = async () => {
+    let u = await DataStore.query(User, u => u.sub("eq", sub));
+    if (!u[0]) return;
+    let pp = u[0].image[0];
+    setProfPicture(pp);
+    setImages(u[0].image);
+    setBio(u[0].bio);
+    setName(u[0].name);
+  }
+
+  useEffect(() => {
+    fetchUserData();
+  },[profileScreenIsFocused]);
 
   const onSignOut = async () => {
     try {
@@ -35,34 +59,58 @@ const ProfileScreen = ({ navigation }) => {
     Alert.alert('Sign Out Successful!');
   }
 
+  const header = (
+    <View style={styles.header} >
+    <Text 
+      style={styles.hyperlink} 
+      onPress={onSignOut} 
+    >Sign Out</Text>
+  </View>
+  );
+
+  const profilePicture = (
+    <View style={styles.profilePictureContainer} >
+      <TouchableOpacity
+        onPress={() => navigation.push("UserProfile", {
+          name: name,
+          images: images,
+          bio: bio,
+          buttonsVisible: false,
+          })}
+      >
+        <Image source={{uri: profPicture}} style={styles.profilePicture} />
+      </TouchableOpacity>
+      <View style={{flex: 1,}} />
+      <TouchableOpacity 
+        onPress={() => navigation.push("ProfileSetup")}
+        style={styles.buttonSetup}
+      >
+      <Text style={styles.buttonText}>Setup Profile</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const body = (
+    <View style={styles.inputContainer}>
+      {profilePicture}
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <>
-      <View style={styles.header} >
-        <Text 
-          style={styles.hyperlink} 
-          onPress={onSignOut} 
-        >Sign Out</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <Text>Profile Screen</Text>
-        <Button title="Setup Profile" onPress={() => navigation.push("ProfileSetup")} />
-      </View>
-      </>
+      {header}
+      {body}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1
-  },
   pageContainer: {
     justifyContent: 'flex-start',
     alignItems: 'center',
     flex: 1,
     width: '100%',
-    backgroundColor: "#dfe0e6",
+    backgroundColor: 'darkgrey',
   },
   header: {
     height: HEIGHT * .05,
@@ -70,13 +118,41 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-end',
     backgroundColor: 'grey',
-    marginBottom: 15,
+    borderColor: 'black',
+    borderBottomWidth: 1,
+    padding: 5,
   },
   inputContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    margin: 10,
+    padding: 5,
+    marginTop: 3,
+  },
+  profilePictureContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignContent: 'center',
+    height: HEIGHT * .25,
+    width: '100%',
+    backgroundColor: '#dfe0e6',
+    padding: 10,
+    borderBottomColor: 'black',
+    borderBottomWidth: 3,
+    borderTopColor: 'black',
+    borderTopWidth: 1,
+    borderRightColor: 'blue',
+    borderLeftColor: 'blue',
+    borderRightWidth: 2,
+    borderLeftWidth: 2,
+    borderRadius: 20,
+  },
+  profilePicture: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    borderColor: 'black',
+    borderWidth: 5,
   },
   hyperlink: {
     color: 'blue',  
@@ -91,7 +167,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 20,
   },
-  buttonActive: {
+  buttonSetup: {
     height: 50,
     width: 150,
     borderRadius: 25,

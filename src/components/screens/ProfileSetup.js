@@ -75,12 +75,13 @@ const ProfileSetup = ({ navigation }) => {
     setHasKids(u[0].kids);
     setLanguage(u[0].language);
     setBio(u[0].bio);
-    return u[0];
+    setDBUser(true);
+    setImages(u[0].image);
+    setNumOfImages(u[0].image.length);
   }
   
   useEffect(() => {
-    let dbu = findUser();
-    setDBUser(dbu);
+    findUser();
   },[profileSetupIsFocused]);
 
   const nameElement = (
@@ -472,6 +473,11 @@ const ProfileSetup = ({ navigation }) => {
     </>
   );
 
+  const HASHTAGS = {
+    "label": "politics",
+    "name": "libertarian",
+    "weight": 3,
+  };
 
   const isValid = () => {
     return name && gender && lookingfor && height && bodyType && language && hasKids && bio;
@@ -526,9 +532,6 @@ const ProfileSetup = ({ navigation }) => {
         "bodytype": bodyType,
         "language": language,
         "kids": hasKids,
-        "hashtags": [],
-        "hashtagweight": [],
-        "hashtaglabels": []
       })
     );
   } else {
@@ -544,6 +547,7 @@ const ProfileSetup = ({ navigation }) => {
       updated.bodytype = bodyType;
       updated.language = language;
       updated.kids = hasKids;
+      updated.hashtags = [HASHTAGS];
   }));
 
   }

@@ -26,7 +26,7 @@ const ProfileView = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { name, images, bio, currentProfile, scrollToIndex} = route.params;
+  const { name, images, bio, buttonsVisible, } = route.params;
   const activeImg = useSelector((state) => state.activeImg.value);
   const dispatch = useDispatch();
 
@@ -56,7 +56,6 @@ const ProfileView = () => {
         name: name,
         bio: bio,
         images: images,
-        currentProfile: currentProfile,
         buttonPress: -1,
       },
       merge: true,
@@ -70,7 +69,6 @@ const ProfileView = () => {
         name: name,
         bio: bio,
         images: images,
-        currentProfile: currentProfile,
         buttonPress: 1,
       },
       merge: true,
@@ -248,10 +246,14 @@ const ProfileView = () => {
             {profileEndBuffer}
         </View>
       </ScrollView>
-      <View style={styles.floatingLikeButtonsContainer}>
+      {buttonsVisible ? (
+        <View style={styles.floatingLikeButtonsContainer}>
         {floatingNopeButton}
         {floatingLikeButton}
       </View>
+      ) : 
+      null
+      }
     </View>
   )
 }

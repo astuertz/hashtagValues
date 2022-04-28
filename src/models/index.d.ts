@@ -8,7 +8,12 @@ export enum Genders {
   OTHER = "OTHER"
 }
 
-
+export declare class Values {
+  readonly label?: string | null;
+  readonly name?: string | null;
+  readonly weight?: number | null;
+  constructor(init: ModelInit<Values>);
+}
 
 type MatchMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
@@ -42,9 +47,8 @@ export declare class User {
   readonly bodytype?: string | null;
   readonly language: string;
   readonly kids: string;
-  readonly hashtags?: (string | null)[] | null;
-  readonly hashtagweight?: (number | null)[] | null;
-  readonly hashtaglabels?: (string | null)[] | null;
+  readonly hashtags?: (Values | null)[] | null;
+  readonly values?: (Values | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<User, UserMetaData>);

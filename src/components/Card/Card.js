@@ -19,7 +19,7 @@ const HEIGHT = Dimensions.get("window").height;
 
 const Card = (props) => {
 
-  const { name, images, bio, currentProfile } = props.profileData;
+  const { name, images, bio, } = props.profileData;
   const cardIsFocused = useIsFocused();
   const activeImg = useSelector((state) => state.activeImg.value);
   const dispatch = useDispatch();
@@ -28,7 +28,7 @@ const Card = (props) => {
     name: name,
     images: images,
     bio: bio,
-    currentProfile: currentProfile,
+    buttonsVisible: true,
     });
 
   useEffect(() => {

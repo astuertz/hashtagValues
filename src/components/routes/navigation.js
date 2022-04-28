@@ -34,6 +34,7 @@ const ProfileScreenStackScreen = () => (
     <ProfileScreenStack.Navigator screenOptions={{ headerTransparent: true, title: null, headerShown: false,}}>
         <ProfileScreenStack.Screen name="ProfileScreen" component={ProfileScreen} />
         <ProfileScreenStack.Screen name="ProfileSetup" component={ProfileSetup} />
+        <ProfileScreenStack.Screen name="UserProfile" component={ProfileView} />
     </ProfileScreenStack.Navigator>
 );
 

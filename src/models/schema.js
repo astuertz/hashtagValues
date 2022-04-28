@@ -183,23 +183,19 @@ export const schema = {
                 "hashtags": {
                     "name": "hashtags",
                     "isArray": true,
-                    "type": "String",
+                    "type": {
+                        "nonModel": "Values"
+                    },
                     "isRequired": false,
                     "attributes": [],
                     "isArrayNullable": true
                 },
-                "hashtagweight": {
-                    "name": "hashtagweight",
+                "values": {
+                    "name": "values",
                     "isArray": true,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true
-                },
-                "hashtaglabels": {
-                    "name": "hashtaglabels",
-                    "isArray": true,
-                    "type": "String",
+                    "type": {
+                        "nonModel": "Values"
+                    },
                     "isRequired": false,
                     "attributes": [],
                     "isArrayNullable": true
@@ -259,6 +255,33 @@ export const schema = {
             ]
         }
     },
-    "nonModels": {},
-    "version": "5f1accab84be352fe8381e06d8f56086"
+    "nonModels": {
+        "Values": {
+            "name": "Values",
+            "fields": {
+                "label": {
+                    "name": "label",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "weight": {
+                    "name": "weight",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            }
+        }
+    },
+    "version": "1a37a50fbe2ec1dc7eb14fdb2b65ed7f"
 };

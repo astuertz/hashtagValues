@@ -18,20 +18,68 @@ import data from '../../../TinderAssets/assets/data/users2';
 import { PanGestureHandler, GestureHandlerRootView, } from 'react-native-gesture-handler';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useSelector, useDispatch, } from 'react-redux';
+import { DataStore } from '@aws-amplify/datastore';
+import { User } from '../../models';
 
 const AnimatedStack = () => {
 
   const route = useRoute();
   const isFocused = useIsFocused();
+  const stack = useSelector((state) => state.profileStack.value);
 
   const [currentProfile, setCurrentProfile] = useState(0);
   const [nextIndex, setNextIndex] = useState(currentProfile + 1);
 
-  const nextProfileData = data[nextIndex];
-  const profileData = data[currentProfile];
+  //const nextProfileData = data[nextIndex];
+  //const profileData = data[currentProfile];
+
+  const fetchProfileData = async (subvalue) => {
+    const foundUser = await DataStore.query(User, u => u.sub("eq", subvalue));
+    const d = {
+      id: foundUser[0].sub,
+      name: foundUser[0].name,
+      images: foundUser[0].image,
+      bio: foundUser[0].bio,
+    };
+    setProfileData(d);
+  }
+
+  const fetchNextProfileData = async (subvalue) => {
+    const foundUser = await DataStore.query(User, u => u.sub("eq", subvalue));
+    const d = {
+      id: foundUser[0].sub,
+      name: foundUser[0].name,
+      images: foundUser[0].image,
+      bio: foundUser[0].bio,
+    };
+    setNextProfileData(d);
+  }
+
+  const [profileData, setProfileData] = useState(null);
+  const [nextProfileData, setNextProfileData] = useState(null);
+
+  //const nextProfileData = fetchProfileData(stack[nextIndex]);
+  //const profileData = fetchProfileData(stack[currentProfile]);
 
   useEffect(() => {
-    setNextIndex(currentProfile + 1);
+    if (!stack) return;
+    fetchProfileData(stack[currentProfile]);
+    fetchNextProfileData(stack[nextIndex]);
+  }, []);
+
+  useEffect(() => {
+    if (!stack[currentProfile]) {
+      setProfileData(null);
+      return;
+    }
+    fetchProfileData(stack[currentProfile]);
+    if (!stack[currentProfile + 1]) {
+      setNextProfileData(null);
+      return;
+    }
+    fetchNextProfileData(stack[currentProfile + 1]);
+    //setNextIndex(currentProfile + 1);
   }, [currentProfile]);
 
   const LIKE_CARD_TIMER = 500;
@@ -63,7 +111,7 @@ const AnimatedStack = () => {
         );
     }
     route.params.buttonPress = 0;
-  }, [isFocused]);
+  }, [isFocused, route.params?.buttonPress]);
 
   useEffect(() => {
     translateCardX.value = 0;          
@@ -181,8 +229,7 @@ const AnimatedStack = () => {
             <Animated.View style={[styles.likeIcons, {backgroundColor: 'black',}, nopeStyle]} >
               {nopeIcon}
             </Animated.View>
-              <Card profileData={profileData} />
-            
+              <Card profileData={profileData} />            
           </Animated.View>
         </PanGestureHandler>
         ) : ( 

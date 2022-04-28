@@ -6,12 +6,14 @@ import { useIsFocused } from '@react-navigation/native';
 import { useSelector, useDispatch, } from 'react-redux';
 import { DataStore } from '@aws-amplify/datastore';
 import { User } from '../../models';
+import { updateUsersArray } from '../../features/counter/profileStackSlice';
 
 const HomeScreen = ({navigation}) => {
 
   const homeIsFocused = useIsFocused();
   const [profileIsConfig, setProfileIsConfig] = useState(false);
   const sub = useSelector((state) => state.user.sub);
+  const dispatch = useDispatch();
 
   const queryUser = async () => {
     if (!sub) return;
@@ -20,12 +22,22 @@ const HomeScreen = ({navigation}) => {
       setProfileIsConfig(true);
     }
     return;
-    //if (dbUser.length == 0) return false;
-    //return true;
+  }
+
+  const queryProfileStack = async () => {
+    if (!sub) return;
+    const dbUsers = await DataStore.query(User, u => u.sub("ne", sub));
+    let stack = [];
+    for (i=0; i < dbUsers.length; i++) {
+      stack[i] = dbUsers[i].sub;
+    }
+    dispatch(updateUsersArray(stack));
+    return;
   }
 
   useEffect(() => {
     queryUser();
+    queryProfileStack();
   }, [homeIsFocused]);
 
   return (
