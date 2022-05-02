@@ -6,6 +6,8 @@ export const userAuthSlice = createSlice({
     value: null,
     isConfirmed: false,
     sub: null,
+    isConfiged: false,
+    forcedUpdate: false,
   },
   reducers: {
     validateUser: (state, action) => {
@@ -22,9 +24,15 @@ export const userAuthSlice = createSlice({
     updateSub: (state, action) => {
       state.sub = action.payload
     },
+    setProfConfiged: (state) => {
+      state.isConfiged = true
+    },
+    forceUpdate: (state, action) => {
+      state.forcedUpdate = action.payload
+    }
   }
 })
 
-export const { validateUser, signOutUser, confirmUser, updateSub } = userAuthSlice.actions
+export const { validateUser, signOutUser, confirmUser, updateSub, setProfConfiged, forceUpdate, } = userAuthSlice.actions
 
 export default userAuthSlice.reducer

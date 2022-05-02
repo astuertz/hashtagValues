@@ -29,77 +29,84 @@ const AnimatedStack = () => {
   const stack = useSelector((state) => state.profileStack.value);
 
   const [currentProfile, setCurrentProfile] = useState(0);
-  const [nextIndex, setNextIndex] = useState(currentProfile + 1);
-
-  //const nextProfileData = data[nextIndex];
-  //const profileData = data[currentProfile];
 
   const fetchProfileData = async (subvalue) => {
-    const foundUser = await DataStore.query(User, u => u.sub("eq", subvalue));
-    const d = {
-      id: foundUser[0].sub,
-      name: foundUser[0].name,
-      images: foundUser[0].image,
-      bio: foundUser[0].bio,
-      age: foundUser[0].age,
-      location: foundUser[0].location,
-      height: foundUser[0].height,
-      bodytype: foundUser[0].bodytype,
-      kids: foundUser[0].kids,
-      gender: foundUser[0].gender,
-      lookingfor: foundUser[0].lookingfor,
-      hashtags: foundUser[0].hashtags,
-      values: foundUser[0].values,
-      language: foundUser[0].language,
-    };
-    setProfileData(d);
+    try {
+      const foundUser = await DataStore.query(User, u => u.sub("eq", subvalue));
+      if (!foundUser) return;
+      const d = {
+        id: foundUser[0].sub,
+        name: foundUser[0].name,
+        images: foundUser[0].image,
+        bio: foundUser[0].bio,
+        age: foundUser[0].age,
+        location: foundUser[0].location,
+        height: foundUser[0].height,
+        bodytype: foundUser[0].bodytype,
+        kids: foundUser[0].kids,
+        gender: foundUser[0].gender,
+        lookingfor: foundUser[0].lookingfor,
+        hashtags: foundUser[0].hashtags,
+        values: foundUser[0].values,
+        language: foundUser[0].language,
+      };
+      setProfileData(d);
+    } catch (e) {
+      console.log(e.message);
+    }
   }
 
   const fetchNextProfileData = async (subvalue) => {
-    const foundUser = await DataStore.query(User, u => u.sub("eq", subvalue));
-    const d = {
-      id: foundUser[0].sub,
-      name: foundUser[0].name,
-      images: foundUser[0].image,
-      bio: foundUser[0].bio,
-      age: foundUser[0].age,
-      location: foundUser[0].location,
-      height: foundUser[0].height,
-      bodytype: foundUser[0].bodytype,
-      kids: foundUser[0].kids,
-      gender: foundUser[0].gender,
-      lookingfor: foundUser[0].lookingfor,
-      hashtags: foundUser[0].hashtags,
-      values: foundUser[0].values,
-      language: foundUser[0].language,
-    };
-    setNextProfileData(d);
+    try {
+      const foundUser = await DataStore.query(User, u => u.sub("eq", subvalue));
+      if (!foundUser) return;
+      const d = {
+        id: foundUser[0].sub,
+        name: foundUser[0].name,
+        images: foundUser[0].image,
+        bio: foundUser[0].bio,
+        age: foundUser[0].age,
+        location: foundUser[0].location,
+        height: foundUser[0].height,
+        bodytype: foundUser[0].bodytype,
+        kids: foundUser[0].kids,
+        gender: foundUser[0].gender,
+        lookingfor: foundUser[0].lookingfor,
+        hashtags: foundUser[0].hashtags,
+        values: foundUser[0].values,
+        language: foundUser[0].language,
+      };
+      setNextProfileData(d);
+    } catch (e) {
+      console.log(e.message);
+    }
   }
 
   const [profileData, setProfileData] = useState(null);
   const [nextProfileData, setNextProfileData] = useState(null);
 
-  //const nextProfileData = fetchProfileData(stack[nextIndex]);
-  //const profileData = fetchProfileData(stack[currentProfile]);
 
   useEffect(() => {
     if (!stack) return;
     fetchProfileData(stack[currentProfile]);
-    fetchNextProfileData(stack[nextIndex]);
-  }, []);
+    fetchNextProfileData(stack[currentProfile + 1]);
+  }, [isFocused]);
 
   useEffect(() => {
     if (!stack[currentProfile]) {
       setProfileData(null);
       return;
     }
-    fetchProfileData(stack[currentProfile]);
+    if (nextProfileData) {
+      setProfileData(nextProfileData);
+    } else {
+      fetchProfileData(stack[currentProfile]);
+    }
     if (!stack[currentProfile + 1]) {
       setNextProfileData(null);
       return;
     }
     fetchNextProfileData(stack[currentProfile + 1]);
-    //setNextIndex(currentProfile + 1);
   }, [currentProfile]);
 
   const LIKE_CARD_TIMER = 500;

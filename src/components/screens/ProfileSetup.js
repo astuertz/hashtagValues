@@ -16,7 +16,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Auth } from 'aws-amplify';
 import { useSelector, useDispatch, } from 'react-redux';
-import { signOutUser } from '../../features/counter/userAuthSlice';
+import { forceUpdate, signOutUser } from '../../features/counter/userAuthSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useIsFocused } from '@react-navigation/native';
@@ -561,7 +561,7 @@ const ProfileSetup = ({ navigation }) => {
         "bodytype": bodyType,
         "language": language,
         "kids": hasKids,
-        "age": parseInt(age),
+        "age": age,
         "location": location,
       })
     );
@@ -578,12 +578,13 @@ const ProfileSetup = ({ navigation }) => {
       updated.bodytype = bodyType;
       updated.language = language;
       updated.kids = hasKids;
-      updated.age = parseInt(age);
+      updated.age = age;
       updated.location = location;
   }));
 
   }
   Alert.alert('Profile Saved!');
+  dispatch(forceUpdate(true));
   navigation.pop();
   }
 

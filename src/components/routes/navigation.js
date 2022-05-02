@@ -4,7 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Auth } from 'aws-amplify';
 import { useSelector, useDispatch, } from 'react-redux';
-import { validateUser, confirmUser, updateSub } from '../../features/counter/userAuthSlice';
+import { validateUser, confirmUser, updateSub, forceUpdate, } from '../../features/counter/userAuthSlice';
+
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -18,8 +19,9 @@ import SignUp from '../screens/SignUp';
 import GalleryScreen from '../screens/GalleryScreen';
 import EmailConfirmation from '../screens/EmailConfirmation';
 import ProfileSetup from '../screens/ProfileSetup';
-import { User } from '../../models';
 import { DataStore } from '@aws-amplify/datastore';
+import { User } from '../../models';
+import { updateUsersArray } from '../../features/counter/profileStackSlice';
 
 const HomeScreenStack = createNativeStackNavigator();
 const HomeScreenStackScreen = () => (
@@ -110,15 +112,18 @@ const RootStackScreen = () => {
 
   const getAuth = async () => {
     try {
-      let u = await Auth.currentAuthenticatedUser();
+      let u = await Auth.currentAuthenticatedUser().catch();
       dispatch(validateUser(true));
+      if (!u) return;
       let s = u.attributes.sub;
+      if (!s) return;
       dispatch(updateSub(s));
       if (u.attributes.email_verified) {
         dispatch(confirmUser());
       }
-    } catch {
       return;
+    } catch (e) {
+      console.log(e.message);
     }
   }
 
@@ -126,7 +131,7 @@ const RootStackScreen = () => {
       setTimeout(() => {
           setIsLoading(!isLoading);
           getAuth();
-      }, 2500)
+      }, 2500);
   }, []);
 
   return (

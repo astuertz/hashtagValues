@@ -45,23 +45,27 @@ const ProfileScreen = ({ navigation }) => {
   const [language, setLanguage] = useState(null);
   
   const fetchUserData = async () => {
-    let u = await DataStore.query(User, u => u.sub("eq", sub));
-    if (!u[0]) return;
-    let pp = u[0].image[0];
-    setProfPicture(pp);
-    setImages(u[0].image);
-    setBio(u[0].bio);
-    setName(u[0].name);
-    setAge(u[0].age);
-    setLocation(u[0].location);
-    setHeight(u[0].height);
-    setBodyType(u[0].bodytype);
-    setKids(u[0].kids);
-    setGender(u[0].gender);
-    setLookingFor(u[0].lookingfor);
-    setHashtags(u[0].hashtags);
-    setValues(u[0].values);
-    setLanguage(u[0].language);
+    try {
+      let u = await DataStore.query(User, u => u.sub("eq", sub)).catch();
+      if (!u[0]) return;
+      let pp = u[0].image[0];
+      setProfPicture(pp);
+      setImages(u[0].image);
+      setBio(u[0].bio);
+      setName(u[0].name);
+      setAge(u[0].age);
+      setLocation(u[0].location);
+      setHeight(u[0].height);
+      setBodyType(u[0].bodytype);
+      setKids(u[0].kids);
+      setGender(u[0].gender);
+      setLookingFor(u[0].lookingfor);
+      setHashtags(u[0].hashtags);
+      setValues(u[0].values);
+      setLanguage(u[0].language);
+    } catch (e) {
+      console.log(e.message);
+    }
   }
 
   useEffect(() => {
