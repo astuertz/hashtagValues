@@ -16,8 +16,8 @@ const HomeScreen = ({navigation}) => {
   const [profileIsConfig, setProfileIsConfig] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const sub = useSelector((state) => state.user.sub);
-  const forcedUpdate = useSelector((state) => state.user.forcedUpdate);
-  const checkStack = useSelector((state) => state.profileStack.value);
+  //const userStack = useSelector((state) => state.profileStack.value);
+  const [userStack, setUserStack] = useState(null);
   const [lookingfor, setLookingFor] = useState(null);
   const [gender, setGender] = useState(null);
 
@@ -26,13 +26,16 @@ const HomeScreen = ({navigation}) => {
   const queryUser = async () => {
     try {
       if (!sub) return;
-      const foundUser = await DataStore.query(User, u => u.sub("eq", sub)).catch();
+      const foundUser = await DataStore.query(User, u => u.sub("eq", sub));
       if (!foundUser[0]) return;
       setProfileIsConfig(true);
       let lf = foundUser[0].lookingfor;
       setLookingFor(lf);
       let g = foundUser[0].gender;
       setGender(g);
+      let s = foundUser[0].stack;
+      //dispatch(updateUsersArray(s));
+      setUserStack(s);
       return;
     } catch (e) {
       console.log(e.message);
@@ -42,7 +45,7 @@ const HomeScreen = ({navigation}) => {
   const queryProfileStack = async () => {
     try {
       if (!sub) return;
-      const dbUsers = await DataStore.query(User, u => u.sub("ne", sub)).catch();
+      const dbUsers = await DataStore.query(User, u => u.sub("ne", sub));
       if (!dbUsers) return;
       const stack = [];
       for (i=0; i < dbUsers.length; i++) {
@@ -64,6 +67,11 @@ const HomeScreen = ({navigation}) => {
         //END
       }
       dispatch(updateUsersArray(stack));
+      let dbU = await DataStore.query(User, u => u.sub("eq", sub));
+      let u = dbU[0];
+      await DataStore.save(User.copyOf(u, updated => {
+        updated.stack = stack;
+      }));
       return;
     } catch (e) {
       console.log(e.message);
@@ -74,29 +82,30 @@ const HomeScreen = ({navigation}) => {
     try {
       await queryUser();
       await queryProfileStack();
-      setIsLoading(false);
     } catch (e) {
       console.log(e.message);
     }
   }
 
   useEffect(() => {
-    if (forcedUpdate) {
-      dispatch(forceUpdate(false));
-    }
+    setIsLoading(true);
     updateStack();
+    setIsLoading(false);
   }, [homeIsFocused]);
 
   return (
       <SafeAreaView style={styles.pageContainer}>
-        {!checkStack ? ( <LoadingScreen /> ) : profileIsConfig ? (
-          <AnimatedStack />
+      {/*If still loading, show LoadingScreen; else, check that Auth is in User Table;
+      if true, check that a profile stack has been found; if no Auth in User Table,
+      load screen to set up profile */}
+        {isLoading ? ( <LoadingScreen /> ) : (profileIsConfig ? (
+          userStack ? <AnimatedStack stack={userStack} setStack={setUserStack} /> : null
         ) : (
           <>
           <Text>Profile is not set up!</Text>
           <Button title="Set Up Your Profile" onPress={() => navigation.navigate("Profile")} />
           </>
-        )}
+        ))}
       </SafeAreaView>
   );
 };

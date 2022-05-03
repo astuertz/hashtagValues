@@ -50,6 +50,7 @@ export declare class User {
   readonly values?: (Values | null)[] | null;
   readonly age?: string | null;
   readonly location: string;
+  readonly stack?: (string | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<User, UserMetaData>);

@@ -214,6 +214,14 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "stack": {
+                    "name": "stack",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -290,5 +298,5 @@ export const schema = {
             }
         }
     },
-    "version": "be3949ccb957637c7c5372e5fdf459c4"
+    "version": "2eb4596df58b647754a1e0d8a8310649"
 };

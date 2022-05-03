@@ -46,7 +46,7 @@ const ProfileScreen = ({ navigation }) => {
   
   const fetchUserData = async () => {
     try {
-      let u = await DataStore.query(User, u => u.sub("eq", sub)).catch();
+      let u = await DataStore.query(User, u => u.sub("eq", sub));
       if (!u[0]) return;
       let pp = u[0].image[0];
       setProfPicture(pp);

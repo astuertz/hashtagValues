@@ -14,7 +14,6 @@ import Animated, {
   withTiming,
  } from 'react-native-reanimated';
 import { useNavigation, useRoute, useIsFocused, useFocusEffect } from '@react-navigation/native';
-import data from '../../../TinderAssets/assets/data/users2';
 import { PanGestureHandler, GestureHandlerRootView, } from 'react-native-gesture-handler';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -22,18 +21,20 @@ import { useSelector, useDispatch, } from 'react-redux';
 import { DataStore } from '@aws-amplify/datastore';
 import { User } from '../../models';
 
-const AnimatedStack = () => {
+const AnimatedStack = (props) => {
 
   const route = useRoute();
   const isFocused = useIsFocused();
-  const stack = useSelector((state) => state.profileStack.value);
+  //const stack = useSelector((state) => state.profileStack.value);
+  const stack = props.stack;
+  const sub = useSelector((state) => state.user.sub);
 
   const [currentProfile, setCurrentProfile] = useState(0);
 
   const fetchProfileData = async (subvalue) => {
     try {
       const foundUser = await DataStore.query(User, u => u.sub("eq", subvalue));
-      if (!foundUser) return;
+      if (!foundUser[0]) return;
       const d = {
         id: foundUser[0].sub,
         name: foundUser[0].name,
@@ -59,7 +60,7 @@ const AnimatedStack = () => {
   const fetchNextProfileData = async (subvalue) => {
     try {
       const foundUser = await DataStore.query(User, u => u.sub("eq", subvalue));
-      if (!foundUser) return;
+      if (!foundUser[0]) return;
       const d = {
         id: foundUser[0].sub,
         name: foundUser[0].name,
@@ -88,11 +89,14 @@ const AnimatedStack = () => {
 
   useEffect(() => {
     if (!stack) return;
+    if (stack.length < currentProfile) return;
     fetchProfileData(stack[currentProfile]);
+    if (stack.length < currentProfile + 1) return;
     fetchNextProfileData(stack[currentProfile + 1]);
   }, [isFocused]);
 
   useEffect(() => {
+    if (!stack) return;
     if (!stack[currentProfile]) {
       setProfileData(null);
       return;

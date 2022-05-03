@@ -22,6 +22,7 @@ import ProfileSetup from '../screens/ProfileSetup';
 import { DataStore } from '@aws-amplify/datastore';
 import { User } from '../../models';
 import { updateUsersArray } from '../../features/counter/profileStackSlice';
+import { getImageSourceProperties } from 'react-native/Libraries/Image/ImageSource';
 
 const HomeScreenStack = createNativeStackNavigator();
 const HomeScreenStackScreen = () => (
@@ -112,7 +113,7 @@ const RootStackScreen = () => {
 
   const getAuth = async () => {
     try {
-      let u = await Auth.currentAuthenticatedUser().catch();
+      let u = await Auth.currentAuthenticatedUser();
       dispatch(validateUser(true));
       if (!u) return;
       let s = u.attributes.sub;
@@ -127,10 +128,11 @@ const RootStackScreen = () => {
     }
   }
 
+
   useEffect(() => {
       setTimeout(() => {
-          setIsLoading(!isLoading);
-          getAuth();
+        setIsLoading(!isLoading);
+        getAuth();
       }, 2500);
   }, []);
 
