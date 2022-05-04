@@ -36,6 +36,14 @@ const HomeScreen = ({navigation}) => {
       let s = foundUser[0].stack;
       //dispatch(updateUsersArray(s));
       setUserStack(s);
+      /*
+      ~~Saving this here to search 'values'~~
+      let test = foundUser[0].values;
+      var index = test.findIndex(function(item){
+        return item.weight === 100
+      });
+      console.log(index);
+      */
       return;
     } catch (e) {
       console.log(e.message);
@@ -45,8 +53,15 @@ const HomeScreen = ({navigation}) => {
   const queryProfileStack = async () => {
     try {
       if (!sub) return;
-      const dbUsers = await DataStore.query(User, u => u.sub("ne", sub));
+      const dbUsers = await DataStore.query(User, u => u.sub("ne", sub).lookingfor("contains", gender));
       if (!dbUsers) return;
+      const stack = [];
+      for (i=0; i < dbUsers.length; i++) {
+        if (lookingfor.indexOf(dbUsers[i].gender) >= 0) {
+          stack.push(dbUsers[i].sub);
+        }
+      }
+      /*
       const stack = [];
       for (i=0; i < dbUsers.length; i++) {
         //For Each User != AuthUser.sub
@@ -66,6 +81,7 @@ const HomeScreen = ({navigation}) => {
         }
         //END
       }
+      */
       dispatch(updateUsersArray(stack));
       let dbU = await DataStore.query(User, u => u.sub("eq", sub));
       let u = dbU[0];

@@ -14,24 +14,44 @@ import { increment, decrement, incrementByAmount, reset, setToAmount } from '../
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
-const [gender, sexuality, relationshipType, single] = ['Woman', 'Straight', 'Monogamous', 'Single'];
-const [height, bodyType] = [`5'4"`, 'Average'];
-const [ethnicity, religion, zodiac, political, employment, education, language] = ['White', 'Christian', 'Libra', 'Politically Conservative', 'Employed full-time', 'Graduate degree', 'English'];
+//const [gender, sexuality, relationshipType, single] = ['Woman', 'Straight', 'Monogamous', 'Single'];
+const [sexuality, relationshipType, single] = ['Straight', 'Monogamous', 'Single'];
+//const [height, bodyType] = [`5'4"`, 'Average'];
+//const [ethnicity, religion, zodiac, political, employment, education, language] = ['White', 'Christian', 'Libra', 'Politically Conservative', 'Employed full-time', 'Graduate degree', 'English'];
+const [ethnicity, religion, zodiac, political, employment, education] = ['White', 'Christian', 'Libra', 'Politically Conservative', 'Employed full-time', 'Graduate degree'];
 const [diet, smoking, drinking, drugs] = ['Ketogenic', "Doesn't smoke cigarettes", "Drinks occasionally", "Doesn't use drugs"];
-const [hasKids, hasPets] = ["Doesn't have kids but wants them", "Has cat(s)"];
-const [lookingFor, datingType] = ["Looking for men", "Long-term dating"];
+//const [hasKids, hasPets] = ["Doesn't have kids but wants them", "Has cat(s)"];
+const hasPets = "Has cat(s)";
+//const [lookingFor, datingType] = ["Looking for men", "Long-term dating"];
+const datingType = "Long-term dating";
 const hasTags = ['#Single', '#Conservative', '#Homesteader', '#JustLooking', '#NoKids', '#SeriousRelationship'];
 
 const ProfileView = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { name, images, bio, age, location, buttonsVisible, } = route.params;
+  const { 
+    name, 
+    images, 
+    bio, 
+    age, 
+    location,
+    height,
+    bodyType,
+    gender,
+    lookingFor,
+    language,
+    values,    
+    buttonsVisible, 
+  } = route.params;
+  const hasKids = route.params.kids;
   const activeImg = useSelector((state) => state.activeImg.value);
   const dispatch = useDispatch();
 
   const imagesRef = useRef(null);
   const profileViewisFocused = useIsFocused();
+
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     imagesRef.current?.scrollTo({x: WIDTH * activeImg, animated: false});
@@ -125,6 +145,7 @@ const ProfileView = () => {
 
   const profileDetails = (
     <>
+    {/* 
     <View style={styles.profileDetailsContainer}>
       <AntDesign 
         name="user"
@@ -176,6 +197,63 @@ const ProfileView = () => {
       <Text style={styles.profileDetailsText}>{lookingFor} | {datingType}</Text>
     </View>
     </>
+    */}
+    <View style={styles.profileDetailsContainer}>
+      <AntDesign 
+        name="user"
+        size={18}
+        color={'black'}
+      />
+      <Text style={styles.profileDetailsText}>Gender: {gender}</Text>
+    </View>
+    <View style={styles.profileDetailsContainer}>
+      <MaterialIcons 
+        name="fitness-center"
+        size={18}
+        color={'black'}
+      />
+      <Text style={styles.profileDetailsText}>{height} | {bodyType}</Text>
+    </View>
+    <View style={styles.profileDetailsContainer}> 
+      <Fontisto 
+        name="world-o"
+        size={18}
+        color={'black'}
+      /> 
+      <Text style={styles.profileDetailsText}>Speaks {language}</Text>
+    </View>
+    <View style={styles.profileDetailsContainer}>
+      <Ionicons 
+        name="home"
+        size={18}
+        color={'black'}
+      />
+      <Text style={styles.profileDetailsText}>Has Kids: {hasKids}</Text>
+    </View>
+    <View style={styles.profileDetailsContainer}>
+      <Ionicons 
+        name="search"
+        size={18}
+        color={'black'}
+      />
+      <Text style={styles.profileDetailsText}>Looking For: {lookingFor}</Text>
+    </View>
+    </>
+  );
+
+  const expandButton = (
+    <View style={styles.expandButtonContainer} >
+      <TouchableOpacity
+        onPress={() => setShowDetails(!showDetails)}   
+      >
+        <MaterialIcons 
+          name={showDetails ? ("expand-less") : ("expand-more")}
+          size={36}
+          color={'black'}
+          style={{alignSelf: 'center',}}
+        />
+      </TouchableOpacity>
+    </View>
   );
 
   const profileEndBuffer = (
@@ -210,7 +288,6 @@ const ProfileView = () => {
 
   const renderHashTags = (
     <>
-    <Text style={{fontSize: 14, lineHeight: 0,}}>{"\n"}</Text>
     <View style={{flexWrap: 'wrap', justifyContent: 'flex-start', flexDirection: 'row',}}>
       {
         hasTags.map((e, index) => 
@@ -223,6 +300,7 @@ const ProfileView = () => {
         ) 
       }
     </View>
+    <Text style={{fontSize: 14, lineHeight: 0,}}>{"\n"}</Text>
     </>
   );
 
@@ -238,12 +316,17 @@ const ProfileView = () => {
           <View style={styles.headerContainer}>
             {textHeader}            
           </View>
-          {profileDetails}
+          { showDetails ? (
+            profileDetails
+          ) : (
+            null
+          )}
+          {expandButton}
         </View>
         <View style={styles.secondaryTextContainer} >
-            {renderBioText}
-            {renderHashTags}
-            {profileEndBuffer}
+          {renderHashTags}
+          {renderBioText}
+          {profileEndBuffer}
         </View>
       </ScrollView>
       {buttonsVisible ? (
@@ -265,13 +348,6 @@ const styles = StyleSheet.create({
       width: '100%',
       justifyContent: 'center',
       alignItems: 'flex-start',
-    },
-    card: {
-      borderRadius: 10,
-      overflow: 'hidden',
-      flex: 1, 
-      height: '100%',
-      width: '100%',
     },
     wrap: {
       height: HEIGHT * .5,
@@ -305,7 +381,7 @@ const styles = StyleSheet.create({
       paddingVertical: 10,
     },
     profileDetailsContainer: {
-      paddingVertical: 10,
+      paddingVertical: 5,
       paddingHorizontal: 0,
       flexDirection: "row",
       justifyContent: "flex-start",
@@ -339,11 +415,13 @@ const styles = StyleSheet.create({
     },
     secondaryTextContainer: {
       backgroundColor: "#dfe0e6", 
-      padding: 15,
+      padding: 10,
+      top: 0,
     },
     profileDetailsText: {
       fontSize: 14, 
       left: 10,
+      fontWeight: 'bold',
     },
     hashTagContainer: {
       backgroundColor: 'white',
@@ -352,6 +430,16 @@ const styles = StyleSheet.create({
       borderColor: 'black',
       borderWidth: 1.5,
       top: 10,
+    },
+    expandButtonContainer: {
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+    },
+    expandableProfileDetails: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      overflow: 'hidden',
+
     },
 });
 
