@@ -41,7 +41,8 @@ const ProfileView = () => {
     gender,
     lookingFor,
     language,
-    values,    
+    values,   
+    hashtags, 
     buttonsVisible, 
   } = route.params;
   const hasKids = route.params.kids;
@@ -145,59 +146,6 @@ const ProfileView = () => {
 
   const profileDetails = (
     <>
-    {/* 
-    <View style={styles.profileDetailsContainer}>
-      <AntDesign 
-        name="user"
-        size={18}
-        color={'black'}
-      />
-      <Text style={styles.profileDetailsText}>{gender} | {sexuality} | {relationshipType} | {single}</Text>
-    </View>
-    <View style={styles.profileDetailsContainer}>
-      <MaterialIcons 
-        name="fitness-center"
-        size={18}
-        color={'black'}
-      />
-      <Text style={styles.profileDetailsText}>{height} | {bodyType}</Text>
-    </View>
-    <View style={styles.profileDetailsContainer}> 
-      <Fontisto 
-        name="world-o"
-        size={18}
-        color={'black'}
-      /> 
-      <Text style={styles.profileDetailsText}>
-      {ethnicity} | {religion} | {zodiac} | {political} | {employment} | {education} | Speaks {language}
-      </Text>
-    </View>
-    <View style={styles.profileDetailsContainer}>
-      <MaterialCommunityIcons 
-        name="food-apple-outline"
-        size={18}
-        color={'black'}
-      />
-      <Text style={styles.profileDetailsText}>{diet} | {smoking} | {drinking} | {drugs}</Text>
-    </View>
-    <View style={styles.profileDetailsContainer}>
-      <Ionicons 
-        name="home"
-        size={18}
-        color={'black'}
-      />
-      <Text style={styles.profileDetailsText}>{hasKids} | {hasPets}</Text>
-    </View>
-    <View style={styles.profileDetailsContainer}>
-      <Ionicons 
-        name="search"
-        size={18}
-        color={'black'}
-      />
-      <Text style={styles.profileDetailsText}>{lookingFor} | {datingType}</Text>
-    </View>
-    </>
-    */}
     <View style={styles.profileDetailsContainer}>
       <AntDesign 
         name="user"
@@ -288,17 +236,27 @@ const ProfileView = () => {
 
   const renderHashTags = (
     <>
-    <View style={{flexWrap: 'wrap', justifyContent: 'flex-start', flexDirection: 'row',}}>
-      {
-        hasTags.map((e, index) => 
-          <Text
-            key={e}
-            style={{color: "#782f2f", fontSize: 14,}}
-            >
-            {e}{" "}
+    <Text style={{fontSize: 16, fontWeight: "bold",}}>Values</Text>
+    <View style={{flexWrap: 'wrap', justifyContent: 'center', flexDirection: 'row',}}>
+      {hashtags.length > 0 ? (
+        hashtags.map((e, index) => 
+        <>
+          <View style={styles.hashTagContainer} key={e.name + '1'}>
+            <Text
+              key={e.name}
+              style={{color: "#782f2f", fontSize: 14, fontWeight: 'bold',}}
+              >
+              {e.name}
             </Text>
+          </View>
+          <View style={{flex: 1,}} />
+        </>
         ) 
-      }
+      ) : (
+        <Text style={{color: "#782f2f", fontSize: 14, fontWeight: 'bold',}}>
+          This user has not set any values
+        </Text>
+      )}
     </View>
     <Text style={{fontSize: 14, lineHeight: 0,}}>{"\n"}</Text>
     </>
@@ -424,12 +382,13 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
     hashTagContainer: {
-      backgroundColor: 'white',
-      padding: 15,
+      backgroundColor: 'lightblue',
+      padding: 5,
       borderRadius: 25,
       borderColor: 'black',
       borderWidth: 1.5,
-      top: 10,
+      marginTop: 5,
+      marginRight: 0,
     },
     expandButtonContainer: {
       justifyContent: 'flex-end',

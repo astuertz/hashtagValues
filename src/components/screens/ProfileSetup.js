@@ -55,23 +55,13 @@ const ProfileSetup = ({ navigation }) => {
     setName(u[0].name);
     setGender(u[0].gender);
     let lf = u[0].lookingfor;
-    for (i=0; i < lf.length; i++) {
-      if (lf[i] == 'MALE') {
-        setLookingFor([true,lookingfor[1],lookingfor[2],lookingfor[3],lookingfor[4]]);
-      }
-      if (lf[i] == 'FEMALE') {
-        setLookingFor([lookingfor[0],true,lookingfor[2],lookingfor[3],lookingfor[4]]);
-      }
-      if (lf[i] == 'TRANSMALE') {
-        setLookingFor([lookingfor[0],lookingfor[1],true,lookingfor[3],lookingfor[4]]);
-      }
-      if (lf[i] == 'TRANSFEMALE') {
-        setLookingFor([lookingfor[0],lookingfor[1],lookingfor[2],true,lookingfor[4]]);
-      }
-      if (lf[i] == 'OTHER') {
-        setLookingFor([lookingfor[0],lookingfor[1],lookingfor[2],lookingfor[3],true]);
-      }
-    }
+    let newLF = [false,false,false,false,false];
+    if (lf.indexOf('MALE') != -1) newLF[0] = true;
+    if (lf.indexOf('FEMALE') != -1) newLF[1] = true;
+    if (lf.indexOf('TRANSMAN') != -1) newLF[2] = true;
+    if (lf.indexOf('TRANSWOMAN') != -1) newLF[3] = true;
+    if (lf.indexOf('OTHER') != -1) newLF[4] = true;
+    setLookingFor(newLF);
     setHeight(u[0].height);
     setBodyType(u[0].bodytype);
     setHasKids(u[0].kids);
@@ -85,6 +75,7 @@ const ProfileSetup = ({ navigation }) => {
   }
   
   useEffect(() => {
+    if (!profileSetupIsFocused) return;
     findUser();
   },[profileSetupIsFocused]);
 

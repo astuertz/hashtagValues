@@ -31,6 +31,7 @@ const Card = (props) => {
     lookingFor,
     language,
     values,
+    hashtags,
     kids, 
   } = props.profileData;
   const cardIsFocused = useIsFocused();
@@ -48,6 +49,7 @@ const Card = (props) => {
     gender: gender,
     lookingFor: lookingFor,
     language: language,
+    hashtags: hashtags,
     values: values,
     kids: kids,
     buttonsVisible: true,

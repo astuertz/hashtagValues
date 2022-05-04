@@ -60,7 +60,19 @@ const ProfileScreen = ({ navigation }) => {
       setKids(u[0].kids);
       setGender(u[0].gender);
       setLookingFor(u[0].lookingfor);
-      setHashtags(u[0].hashtags);
+      let ht = u[0].hashtags.slice();
+      function GetSortOrder(prop) {    
+        return function(a, b) {    
+            if (b[prop] > a[prop]) {    
+                return 1;    
+            } else if (b[prop] < a[prop]) {    
+                return -1;    
+            }    
+            return 0;    
+        }    
+    }
+      ht.sort(GetSortOrder("weight"));
+      setHashtags(ht);
       setValues(u[0].values);
       setLanguage(u[0].language);
     } catch (e) {
@@ -115,12 +127,20 @@ const ProfileScreen = ({ navigation }) => {
         <Image source={{uri: profPicture}} style={styles.profilePicture} />
       </TouchableOpacity>
       <View style={{flex: 1,}} />
-      <TouchableOpacity 
-        onPress={() => navigation.push("ProfileSetup")}
-        style={styles.buttonSetup}
-      >
-      <Text style={styles.buttonText}>Setup Profile</Text>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity 
+          onPress={() => navigation.push("ProfileSetup")}
+          style={styles.buttonSetup}
+        >
+        <Text style={styles.buttonText}>Setup Profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          onPress={() => navigation.push("ValuesScreen")}
+          style={styles.buttonSetup}
+        >
+        <Text style={styles.buttonText}>Set Values</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 

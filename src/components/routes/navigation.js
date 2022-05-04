@@ -19,6 +19,8 @@ import SignUp from '../screens/SignUp';
 import GalleryScreen from '../screens/GalleryScreen';
 import EmailConfirmation from '../screens/EmailConfirmation';
 import ProfileSetup from '../screens/ProfileSetup';
+import ValuesScreen from '../screens/ValuesScreen';
+
 import { DataStore } from '@aws-amplify/datastore';
 import { User } from '../../models';
 import { updateUsersArray } from '../../features/counter/profileStackSlice';
@@ -38,6 +40,7 @@ const ProfileScreenStackScreen = () => (
         <ProfileScreenStack.Screen name="ProfileScreen" component={ProfileScreen} />
         <ProfileScreenStack.Screen name="ProfileSetup" component={ProfileSetup} />
         <ProfileScreenStack.Screen name="UserProfile" component={ProfileView} />
+        <ProfileScreenStack.Screen name="ValuesScreen" component={ValuesScreen} />
     </ProfileScreenStack.Navigator>
 );
 
@@ -122,12 +125,11 @@ const RootStackScreen = () => {
       if (u.attributes.email_verified) {
         dispatch(confirmUser());
       }
-      return;
+      return s;
     } catch (e) {
       console.log(e.message);
     }
   }
-
 
   useEffect(() => {
       setTimeout(() => {

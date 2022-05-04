@@ -9,6 +9,7 @@ import { User } from '../../models';
 import { updateUsersArray } from '../../features/counter/profileStackSlice';
 import { forceUpdate } from '../../features/counter/userAuthSlice';
 import LoadingScreen from './LoadingScreen';
+import Empty from '../Card/Empty';
 
 const HomeScreen = ({navigation}) => {
 
@@ -20,6 +21,7 @@ const HomeScreen = ({navigation}) => {
   const [userStack, setUserStack] = useState(null);
   const [lookingfor, setLookingFor] = useState(null);
   const [gender, setGender] = useState(null);
+  const [resetStack, setResetStack] = useState(1);
 
   const dispatch = useDispatch();
 
@@ -61,67 +63,58 @@ const HomeScreen = ({navigation}) => {
           stack.push(dbUsers[i].sub);
         }
       }
-      /*
-      const stack = [];
-      for (i=0; i < dbUsers.length; i++) {
-        //For Each User != AuthUser.sub
-        //Check User.gender == lookingfor of AuthUser
-        for (j=0; j < lookingfor.length; j++) {
-          let match = (dbUsers[i].gender == lookingfor[j]);
-          if (match) {
-            //Check that User's gender == dbUser lookingfor
-            for(k=0; k < dbUsers[i].lookingfor.length; k++) {
-              let matchConfirm = (dbUsers[i].lookingfor[k] == gender); 
-              if (matchConfirm) {
-                stack.push(dbUsers[i].sub);
-              }
-            }
-            //END
-          }
-        }
-        //END
-      }
-      */
-      dispatch(updateUsersArray(stack));
+      //dispatch(updateUsersArray(stack));
       let dbU = await DataStore.query(User, u => u.sub("eq", sub));
       let u = dbU[0];
       await DataStore.save(User.copyOf(u, updated => {
         updated.stack = stack;
       }));
+      setUserStack(stack);
       return;
     } catch (e) {
       console.log(e.message);
     }
   }
 
-  const updateStack = async () => {
-    try {
-      await queryUser();
-      await queryProfileStack();
-    } catch (e) {
-      console.log(e.message);
-    }
+  const updateStack = () => {
+    queryUser();
+    queryProfileStack();
   }
-
+  
   useEffect(() => {
     setIsLoading(true);
     updateStack();
     setIsLoading(false);
   }, [homeIsFocused]);
 
+  useEffect(() => {
+    if (resetStack == 1) return;
+    updateStack();
+    setResetStack(1);
+  },[resetStack]);
+
+  const loadStack = (
+    userStack ? <AnimatedStack stack={userStack} setStack={setUserStack} /> : <Empty reset={setResetStack} />
+  );
+
+  const loadedContent = (
+    profileIsConfig ? (
+      loadStack
+    ) : (
+      <>
+      <Text>Profile is not set up!</Text>
+      <Button title="Set Up Your Profile" onPress={() => navigation.navigate("Profile")} />
+      </>
+    )
+  );
+
   return (
       <SafeAreaView style={styles.pageContainer}>
-      {/*If still loading, show LoadingScreen; else, check that Auth is in User Table;
-      if true, check that a profile stack has been found; if no Auth in User Table,
-      load screen to set up profile */}
-        {isLoading ? ( <LoadingScreen /> ) : (profileIsConfig ? (
-          userStack ? <AnimatedStack stack={userStack} setStack={setUserStack} /> : null
+        {isLoading ? ( 
+          <LoadingScreen /> 
         ) : (
-          <>
-          <Text>Profile is not set up!</Text>
-          <Button title="Set Up Your Profile" onPress={() => navigation.navigate("Profile")} />
-          </>
-        ))}
+          loadedContent
+        )}
       </SafeAreaView>
   );
 };
