@@ -34,13 +34,18 @@ const ValuesScreen = ({ navigation }) => {
   const [dbUsers, setDBUsers] = useState(null);
   const [search, setSearch] = useState('');
   const [foundValues, setFoundValues] = useState([]);
+  const [hashtags, setHashtags] = useState([]);
+  const [values, setValues] = useState([]);
 
   const valuesScreenIsFocused = useIsFocused();
   const sub = useSelector((state) => state.user.sub);
 
   const findUser = async () => {
+    if (!sub) return;
     let u = await DataStore.query(User, u => u.sub("eq", sub));
     if (!u[0]) return;
+    setHashtags(u[0].hashtags);
+    setValues(u[0].values);
   }
 
   const fetchdbUsers = async () => {
@@ -51,6 +56,7 @@ const ValuesScreen = ({ navigation }) => {
   useEffect(() => {
     if (!valuesScreenIsFocused) return;
     fetchdbUsers();
+    findUser();
   },[valuesScreenIsFocused]);
 
   const getValueCount = (string) => {
@@ -83,6 +89,12 @@ const ValuesScreen = ({ navigation }) => {
     setFoundValues(results);
   }
 
+  const headerElement = (
+    <View style={styles.instructionsHeader} >
+        <Text style={styles.instructionsText} >Relationships are built on shared values. Using the text box below, search for values selected by other users. The results below will give you suggestions based on your search and show how many users have the same value. Set your values below and save.</Text>
+    </View>
+  );
+
   const searchElement = (
     <>
     <Text style={styles.plainText} >Enter a value to search for:</Text>
@@ -95,16 +107,61 @@ const ValuesScreen = ({ navigation }) => {
     </>
   );
 
+  const updateHashtags = (text, index) => {
+    let ht = hashtags.slice();;
+    let newht = {
+        name: text,
+        weight: ht[index].weight,
+    };
+    ht[index] = newht;
+    setHashtags(ht);
+  }
+
+  const hashtagElement = (
+    <>
+    <Text style={styles.plainText} >Set Your Values:</Text>
+    <Text style={styles.instructionsText} >This is what other users use to search for you.</Text>
+    {hashtags.map((e,index) => 
+    <TextInput 
+      placeholder='value'
+      key={index + 'value'}
+      value={hashtags[index].name}
+      onChangeText={text => updateHashtags(text,index)}
+      style={styles.textInput}  
+    />
+    )}
+    <TouchableOpacity 
+      onPress={() => {
+        let ht = hashtags;
+        let newht = {
+            name: '',
+            weight: 0,
+        };
+        ht[ht.length] = newht;
+        setHashtags(ht);
+      }}
+    >
+      <Ionicons 
+        name="add-circle-outline"
+        size={40}
+        color={'black'}
+      />
+    </TouchableOpacity>
+    </>
+  );
+
   const displaySearchResults = (
     <View style={styles.foundValuesContainer} >
-        {foundValues.map((e, index) =>
-            <>
-            <Text 
-            key={e.name + e.count} 
-            style={{color: "#782f2f", fontSize: 14, fontWeight: 'bold',}}
-            >{e.name} ({e.count})</Text>
-            </>
-        )}
+        <ScrollView>
+            {foundValues.map((e, index) =>
+                <>
+                <Text 
+                key={e.name + e.count} 
+                style={{color: "#782f2f", fontSize: 14, fontWeight: 'bold',}}
+                >{e.name} ({e.count})</Text>
+                </>
+            )}
+        </ScrollView>
     </View>
   );
 
@@ -156,9 +213,15 @@ const ValuesScreen = ({ navigation }) => {
 
   const inputElements = (
     <>
-    {searchElement}
-    {displaySearchResults}
-    {searchButton}
+    {headerElement}
+    <View style={styles.searchContainer}>
+        {searchElement}
+        {searchButton}
+        {displaySearchResults}
+    </View>
+    <View style={styles.searchContainer} >
+        {hashtagElement}
+    </View>
     {saveButton}
     </>
   );
@@ -182,17 +245,13 @@ const ValuesScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1
-  },
   pageContainer: {
     justifyContent: 'flex-start',
     alignItems: 'center',
     flex: 1,
-    width: '100%',
+    width: WIDTH,
     height: HEIGHT,
     backgroundColor: "#dfe0e6",
-    paddingTop: 10,
   },
   header: {
     height: HEIGHT * .05,
@@ -273,6 +332,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     marginBottom: 5,
   },
+  instructionsText: {
+    color: '#75326b',  
+    fontWeight: "bold",
+    fontSize: 14,
+    marginHorizontal: 5,
+    marginBottom: 5, 
+  },
   saveButton: {
     width: '95%',
     height: HEIGHT * .06,
@@ -320,7 +386,30 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     minHeight: HEIGHT * .1,
+    maxHeight: HEIGHT * .2,
     padding: 10,
+    overflow: 'hidden',
+  },
+  instructionsHeader: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flex: 1,
+    width: '100%',
+    backgroundColor: "darkgrey",
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  searchContainer: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flex: 1,
+    width: '100%',
+    backgroundColor: "darkgrey",
+    padding: 10,
+    paddingBottom: 15,
+    marginBottom: 10,
+    borderRadius: 10, 
   },
 });
 
