@@ -10,11 +10,12 @@ const Genders = {
   "OTHER": "OTHER"
 };
 
-const { Match, User, Values } = initSchema(schema);
+const { Match, User, Swipe, Values } = initSchema(schema);
 
 export {
   Match,
   User,
   Genders,
+  Swipe,
   Values
 };

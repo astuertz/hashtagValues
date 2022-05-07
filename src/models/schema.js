@@ -13,30 +13,16 @@ export const schema = {
                 "User1": {
                     "name": "User1",
                     "isArray": false,
-                    "type": {
-                        "model": "User"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "HAS_ONE",
-                        "associatedWith": "id",
-                        "targetName": "matchUser1Id"
-                    }
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
                 },
                 "User2": {
                     "name": "User2",
                     "isArray": false,
-                    "type": {
-                        "model": "User"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "HAS_ONE",
-                        "associatedWith": "id",
-                        "targetName": "matchUser2Id"
-                    }
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -53,20 +39,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": [],
                     "isReadOnly": true
-                },
-                "matchUser1Id": {
-                    "name": "matchUser1Id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "matchUser2Id": {
-                    "name": "matchUser2Id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
                 }
             },
             "syncable": true,
@@ -222,6 +194,16 @@ export const schema = {
                     "attributes": [],
                     "isArrayNullable": true
                 },
+                "swipes": {
+                    "name": "swipes",
+                    "isArray": true,
+                    "type": {
+                        "nonModel": "Swipe"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -278,6 +260,25 @@ export const schema = {
         }
     },
     "nonModels": {
+        "Swipe": {
+            "name": "Swipe",
+            "fields": {
+                "sub": {
+                    "name": "sub",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "like": {
+                    "name": "like",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": true,
+                    "attributes": []
+                }
+            }
+        },
         "Values": {
             "name": "Values",
             "fields": {
@@ -298,5 +299,5 @@ export const schema = {
             }
         }
     },
-    "version": "2eb4596df58b647754a1e0d8a8310649"
+    "version": "effe616d5be17b4beaaa73133be7227c"
 };

@@ -37,7 +37,12 @@ const HomeScreen = ({navigation}) => {
       let g = foundUser[0].gender;
       setGender(g);
       let s = foundUser[0].stack;
-      let stackUnchanged = s.every(item => userStack.includes(item)) && userStack.every(item => s.includes(item));
+      let stackUnchanged;
+      if (s && userStack) {
+        stackUnchanged = s.every(item => userStack?.includes(item)) && userStack?.every(item => s.includes(item));
+      } else {
+        stackUnchanged = false;
+      }      
       if (!stackUnchanged) {
         setUserStack(null);
         setUserStack(s);

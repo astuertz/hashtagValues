@@ -46,6 +46,7 @@ const ProfileSetup = ({ navigation }) => {
   const [images, setImages] = useState(['','','','','','']);
   const [numOfImages, setNumOfImages] = useState(0);
   const [dbUser, setDBUser] = useState(null);
+  const [id, setID] = useState(null);
 
   const profileSetupIsFocused = useIsFocused();
   const sub = useSelector((state) => state.user.sub);
@@ -73,6 +74,7 @@ const ProfileSetup = ({ navigation }) => {
     setNumOfImages(u[0].image.length);
     setAge(u[0].age);
     setLocation(u[0].location);
+    setID(u[0].id);
   }
   
   useEffect(() => {
@@ -542,7 +544,7 @@ const ProfileSetup = ({ navigation }) => {
 
     if (!dbUser) {
 
-      let stack = queryProfileStack(sub, gender, lf);
+      let stack = queryProfileStack(sub, gender, lf, null);
 
       await DataStore.save(
         new User({
@@ -564,7 +566,7 @@ const ProfileSetup = ({ navigation }) => {
   } else {
     let dbUsers = await DataStore.query(User, u => u.sub("eq", sub));
     let u = dbUsers[0];
-    let newStack = await queryProfileStack(sub, gender, lf);
+    let newStack = await queryProfileStack(sub, gender, lf, id);
     await DataStore.save(User.copyOf(u, updated => {
       updated.name = name;
       updated.image = newImages;

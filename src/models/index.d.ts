@@ -8,6 +8,12 @@ export enum Genders {
   OTHER = "OTHER"
 }
 
+export declare class Swipe {
+  readonly sub: string;
+  readonly like: boolean;
+  constructor(init: ModelInit<Swipe>);
+}
+
 export declare class Values {
   readonly name?: string | null;
   readonly weight?: number | null;
@@ -24,12 +30,10 @@ type UserMetaData = {
 
 export declare class Match {
   readonly id: string;
-  readonly User1?: User | null;
-  readonly User2?: User | null;
+  readonly User1: string;
+  readonly User2: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly matchUser1Id?: string | null;
-  readonly matchUser2Id?: string | null;
   constructor(init: ModelInit<Match, MatchMetaData>);
   static copyOf(source: Match, mutator: (draft: MutableModel<Match, MatchMetaData>) => MutableModel<Match, MatchMetaData> | void): Match;
 }
@@ -51,6 +55,7 @@ export declare class User {
   readonly age?: string | null;
   readonly location: string;
   readonly stack?: (string | null)[] | null;
+  readonly swipes?: (Swipe | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<User, UserMetaData>);
