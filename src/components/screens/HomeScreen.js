@@ -10,6 +10,7 @@ import { updateUsersArray } from '../../features/counter/profileStackSlice';
 import { forceUpdate } from '../../features/counter/userAuthSlice';
 import LoadingScreen from './LoadingScreen';
 import Empty from '../Card/Empty';
+import queryProfileStack from '../AnimatedStack/updateStack';
 
 const HomeScreen = ({navigation}) => {
 
@@ -36,49 +37,20 @@ const HomeScreen = ({navigation}) => {
       let g = foundUser[0].gender;
       setGender(g);
       let s = foundUser[0].stack;
-      //dispatch(updateUsersArray(s));
-      setUserStack(s);
-      /*
-      ~~Saving this here to search 'values'~~
-      let test = foundUser[0].values;
-      var index = test.findIndex(function(item){
-        return item.weight === 100
-      });
-      console.log(index);
-      */
-      return;
-    } catch (e) {
-      console.log(e.message);
-    }
-  }
-
-  const queryProfileStack = async () => {
-    try {
-      if (!sub) return;
-      const dbUsers = await DataStore.query(User, u => u.sub("ne", sub).lookingfor("contains", gender));
-      if (!dbUsers) return;
-      const stack = [];
-      for (i=0; i < dbUsers.length; i++) {
-        if (lookingfor.indexOf(dbUsers[i].gender) >= 0) {
-          stack.push(dbUsers[i].sub);
-        }
+      let stackUnchanged = s.every(item => userStack.includes(item)) && userStack.every(item => s.includes(item));
+      if (!stackUnchanged) {
+        setUserStack(null);
+        setUserStack(s);
       }
-      //dispatch(updateUsersArray(stack));
-      let dbU = await DataStore.query(User, u => u.sub("eq", sub));
-      let u = dbU[0];
-      await DataStore.save(User.copyOf(u, updated => {
-        updated.stack = stack;
-      }));
-      setUserStack(stack);
       return;
     } catch (e) {
       console.log(e.message);
     }
   }
 
-  const updateStack = () => {
+  const updateStack = async () => {
     queryUser();
-    queryProfileStack();
+    //setUserStack(await queryProfileStack(sub, gender, lookingfor));
   }
   
   useEffect(() => {

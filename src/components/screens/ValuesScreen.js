@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     minHeight: HEIGHT * .1,
-    maxHeight: HEIGHT * .2,
+    maxHeight: HEIGHT,
     padding: 10,
     overflow: 'hidden',
   },

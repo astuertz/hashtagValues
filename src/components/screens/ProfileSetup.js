@@ -22,6 +22,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useIsFocused } from '@react-navigation/native';
 import { DataStore } from '@aws-amplify/datastore';
 import { User } from '../../models';
+import queryProfileStack from '../AnimatedStack/updateStack';
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -499,6 +500,7 @@ const ProfileSetup = ({ navigation }) => {
     "weight": 3,
   };
 
+  
   const isValid = () => {
     return name && gender && lookingfor && height && bodyType && language && hasKids && bio;
   }
@@ -540,6 +542,8 @@ const ProfileSetup = ({ navigation }) => {
 
     if (!dbUser) {
 
+      let stack = queryProfileStack(sub, gender, lf);
+
       await DataStore.save(
         new User({
         "name": name,
@@ -554,11 +558,13 @@ const ProfileSetup = ({ navigation }) => {
         "kids": hasKids,
         "age": age,
         "location": location,
+        "stack": stack,
       })
     );
   } else {
     let dbUsers = await DataStore.query(User, u => u.sub("eq", sub));
     let u = dbUsers[0];
+    let newStack = await queryProfileStack(sub, gender, lf);
     await DataStore.save(User.copyOf(u, updated => {
       updated.name = name;
       updated.image = newImages;
@@ -571,6 +577,7 @@ const ProfileSetup = ({ navigation }) => {
       updated.kids = hasKids;
       updated.age = age;
       updated.location = location;
+      updated.stack = newStack;
   }));
 
   }
