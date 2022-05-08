@@ -156,7 +156,7 @@ const ValuesScreen = ({ navigation }) => {
             {foundValues.map((e, index) =>
                 <>
                 <Text 
-                key={e.name + e.count} 
+                key={'results' + index} 
                 style={{color: "#782f2f", fontSize: 14, fontWeight: 'bold',}}
                 >{e.name} ({e.count})</Text>
                 </>

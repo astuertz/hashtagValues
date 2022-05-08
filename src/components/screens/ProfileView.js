@@ -243,7 +243,7 @@ const ProfileView = () => {
         <>
           <View style={styles.hashTagContainer} key={e.name + '1'}>
             <Text
-              key={e.name}
+              key={'hashtag' + index}
               style={{color: "#782f2f", fontSize: 14, fontWeight: 'bold',}}
               >
               {e.name}

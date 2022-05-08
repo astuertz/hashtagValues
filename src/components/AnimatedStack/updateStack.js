@@ -23,6 +23,17 @@ const hasNotMatched = (item, id, matches, sub) => {
     return isNotMatched;
 }
 
+const userHasNotSwiped = (item, swipes, foundUser) => {
+    if (!foundUser) return true;
+    let hasNotSwiped = true;
+    swipes.forEach(e => {
+        if (e.sub == item.sub) {
+            hasNotSwiped = false;
+        }
+    });
+    return hasNotSwiped;
+}
+
 const queryProfileStack = async (sub, gender, lookingfor, id) => {
     try {
         if (!sub) return;
@@ -30,7 +41,7 @@ const queryProfileStack = async (sub, gender, lookingfor, id) => {
         const matches = await DataStore.query(Match, c => c.or(
             c => c.User1("eq", sub).User2("eq", sub)
           ));
-        console.log('matches',matches);
+        const AuthUser = await DataStore.query(User, u => u.sub("eq", sub));
         //1. fetch all users that don't have Auth user's sub and
         //2. grab only uses who are looking for the Auth user's gender
         const dbUsers = await DataStore.query(User, u => u.sub("ne", sub).lookingfor("contains", gender));
@@ -40,13 +51,15 @@ const queryProfileStack = async (sub, gender, lookingfor, id) => {
         1. filter all users whose gender is not included in Auth user's lookingfor
         2. filter all users who have not "passed" on Auth user
         BUT keep all users who haven't swiped on Auth user
+        3. filter all users Auth user has not swiped yet.
          */
         let filteredUsers = dbUsers.filter(e => 
             lookingfor.indexOf(e.gender) >= 0).filter(f =>
                 hasNotPassed(f, sub)).filter(g =>
                     hasNotMatched(g, id, matches, sub)
-                );
+                ).filter(h => userHasNotSwiped(h, AuthUser[0].swipes, AuthUser));
         filteredUsers.forEach(e => stack.push(e.sub));
+        stack = stack.sort();
         /*
         let dbU = await DataStore.query(User, u => u.sub("eq", sub));
         let u = dbU[0];

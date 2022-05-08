@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, Dimensions} from 'react-native';
 import logo from '../../graphics/Values_logo.png';
+import { DataStore } from '@aws-amplify/datastore';
+import { User } from '../../models';
 
 
 const WIDTH = Dimensions.get("window").width;
@@ -8,17 +10,24 @@ const HEIGHT = Dimensions.get("window").height;
 
 const LoadingScreen = () => {
 
-    return (
-        <View style={styles.pageContainer}>
-          <View style={styles.logo}>
-            <Image 
-              source={logo}  
-              resizeMode='contain' 
-            />
-            <Text>Loading...</Text>
-          </View>  
-        </View>
-    );
+  const initialize = async () => {
+    let z = await DataStore.query(User);
+    return z;
+  }
+
+  const dbUsers = initialize();
+
+  return (
+    <View style={styles.pageContainer}>
+      <View style={styles.logo}>
+        <Image 
+          source={logo}  
+          resizeMode='contain' 
+        />
+        <Text>Loading...</Text>
+      </View>  
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

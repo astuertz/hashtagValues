@@ -32,6 +32,8 @@ export declare class Match {
   readonly id: string;
   readonly User1: string;
   readonly User2: string;
+  readonly Messages1?: (string | null)[] | null;
+  readonly Messages2?: (string | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Match, MatchMetaData>);

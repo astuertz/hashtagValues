@@ -23,13 +23,15 @@ const HomeScreen = ({navigation}) => {
   const [lookingfor, setLookingFor] = useState(null);
   const [gender, setGender] = useState(null);
   const [resetStack, setResetStack] = useState(1);
+  const [id, setID] = useState(null);
 
   const dispatch = useDispatch();
 
   const queryUser = async () => {
     try {
       if (!sub) return;
-      const foundUser = await DataStore.query(User, u => u.sub("eq", sub));
+      const foundUser = await DataStore.query(User, u => u.sub('eq', sub));
+      console.log(foundUser);
       if (!foundUser[0]) return;
       setProfileIsConfig(true);
       let lf = foundUser[0].lookingfor;
@@ -39,7 +41,7 @@ const HomeScreen = ({navigation}) => {
       let s = foundUser[0].stack;
       let stackUnchanged;
       if (s && userStack) {
-        stackUnchanged = s.every(item => userStack?.includes(item)) && userStack?.every(item => s.includes(item));
+        stackUnchanged = s.every(item => userStack.includes(item)) && userStack.every(item => s.includes(item));
       } else {
         stackUnchanged = false;
       }      
@@ -47,20 +49,21 @@ const HomeScreen = ({navigation}) => {
         setUserStack(null);
         setUserStack(s);
       }
+      let i = foundUser[0].id;
+      setID(i);
       return;
     } catch (e) {
       console.log(e.message);
     }
   }
 
-  const updateStack = async () => {
-    queryUser();
-    //setUserStack(await queryProfileStack(sub, gender, lookingfor));
-  }
+  useEffect(() => {
+    queryProfileStack(sub, gender, lookingfor, id);
+  }, [id]);
   
   useEffect(() => {
     setIsLoading(true);
-    updateStack();
+    queryUser();
     setIsLoading(false);
   }, [homeIsFocused]);
 

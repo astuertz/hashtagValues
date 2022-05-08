@@ -24,6 +24,22 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "Messages1": {
+                    "name": "Messages1",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "Messages2": {
+                    "name": "Messages2",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -299,5 +315,5 @@ export const schema = {
             }
         }
     },
-    "version": "effe616d5be17b4beaaa73133be7227c"
+    "version": "6a1d6263837a05f5deca987501e3ae2a"
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect, } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Auth } from 'aws-amplify';
+import { Auth, Hub } from 'aws-amplify';
 import { useSelector, useDispatch, } from 'react-redux';
 import { validateUser, confirmUser, updateSub, forceUpdate, } from '../../features/counter/userAuthSlice';
 
@@ -131,12 +131,26 @@ const RootStackScreen = () => {
     }
   }
 
+  const [datastoreIsReady, setDatastoreIsReady] = useState(false);
+  // Create listener
+  const listener = Hub.listen("datastore", async hubData => {
+    const  { event, data } = hubData.payload;
+    if (event === "ready") {
+      setDatastoreIsReady(true);
+      console.log('Datastore is ready!');
+    }
+  });
+
+  const loading = () => {
+    getAuth();
+    setIsLoading(false);
+  }
+
   useEffect(() => {
-      setTimeout(() => {
-        setIsLoading(!isLoading);
-        getAuth();
-      }, 2500);
-  }, []);
+    if (!datastoreIsReady) return;
+    listener();
+    loading();   
+  }, [datastoreIsReady]); 
 
   return (
 
