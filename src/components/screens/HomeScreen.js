@@ -24,6 +24,8 @@ const HomeScreen = ({navigation}) => {
   const [gender, setGender] = useState(null);
   const [resetStack, setResetStack] = useState(1);
   const [id, setID] = useState(null);
+  const [user, setUser] = useState({});
+  const [userValues, setUserValues] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -31,8 +33,7 @@ const HomeScreen = ({navigation}) => {
     try {
       if (!sub) return;
       const foundUser = await DataStore.query(User, u => u.sub('eq', sub));
-      console.log(foundUser);
-      if (!foundUser[0]) return;
+      if (!foundUser[0]) return setIsLoading(false);
       setProfileIsConfig(true);
       let lf = foundUser[0].lookingfor;
       setLookingFor(lf);
@@ -51,30 +52,43 @@ const HomeScreen = ({navigation}) => {
       }
       let i = foundUser[0].id;
       setID(i);
+      let v = foundUser[0].values;
+      setUserValues(v);
       return;
     } catch (e) {
       console.log(e.message);
     }
   }
 
-  useEffect(() => {
-    queryProfileStack(sub, gender, lookingfor, id);
-  }, [id]);
+  const updateUserStackinDB = async () => {
+    try {
+      let dbU = await DataStore.query(User, u => u.sub("eq", sub));
+      let u = dbU[0];
+      let newStack = await queryProfileStack(sub, gender, lookingfor, id);
+      await DataStore.save(User.copyOf(u, updated => {
+      updated.stack = newStack;
+      }));
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
   
   useEffect(() => {
+    if (!homeIsFocused) return;
     setIsLoading(true);
+    setUserValues(null);
     queryUser();
-    setIsLoading(false);
   }, [homeIsFocused]);
 
   useEffect(() => {
-    if (resetStack == 1) return;
-    updateStack();
-    setResetStack(1);
-  },[resetStack]);
+    if (!homeIsFocused) return;
+    if (!userValues) return;
+    setIsLoading(false);
+  }, [userValues, homeIsFocused])
+
 
   const loadStack = (
-    userStack ? <AnimatedStack stack={userStack} setStack={setUserStack} /> : <Empty reset={setResetStack} />
+    userStack ? <AnimatedStack stack={userStack} values={userValues ? userValues : []}/> : <Empty reset={setResetStack} />
   );
 
   const loadedContent = (

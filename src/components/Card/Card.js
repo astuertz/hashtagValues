@@ -32,7 +32,8 @@ const Card = (props) => {
     language,
     values,
     hashtags,
-    kids, 
+    kids,
+    matchPercent, 
   } = props.profileData;
   const cardIsFocused = useIsFocused();
   const activeImg = useSelector((state) => state.activeImg.value);
@@ -132,12 +133,8 @@ const Card = (props) => {
 
   const clickablePercentButton = (
     <TouchableOpacity style={styles.percentContainer}
-    onPress={gotoProfileView} >          
-      <MaterialCommunityIcons
-          name="percent"
-          size={24}
-          color={'black'}
-      />
+    onPress={gotoProfileView} >
+      <Text style={{fontSize: 14, color: 'blue',}}>{matchPercent}%</Text>          
     </TouchableOpacity>
   );
 
@@ -250,7 +247,7 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       borderRadius: 23,
       borderColor: 'blue',
-      borderWidth: 3,
+      borderWidth: 2,
     },
     imagesContainer: {
       flexDirection: 'row', 

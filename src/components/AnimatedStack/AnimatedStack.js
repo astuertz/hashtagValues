@@ -27,14 +27,21 @@ const AnimatedStack = (props) => {
   const isFocused = useIsFocused();
   //const stack = useSelector((state) => state.profileStack.value);
   const stack = props.stack;
+  const userValues = props.values;
+  const matchPercent = userValues.length;
   const sub = useSelector((state) => state.user.sub);
 
   const [currentProfile, setCurrentProfile] = useState(0);
+
+  const calculateMatchPercent = () => {
+    return matchPercent;
+  }
 
   const fetchProfileData = async (subvalue) => {
     try {
       const foundUser = await DataStore.query(User, u => u.sub("eq", subvalue));
       if (!foundUser[0]) return;
+      let mp = calculateMatchPercent(foundUser[0].hashtags);
       const d = {
         id: foundUser[0].sub,
         name: foundUser[0].name,
@@ -50,6 +57,7 @@ const AnimatedStack = (props) => {
         hashtags: foundUser[0].hashtags,
         values: foundUser[0].values,
         language: foundUser[0].language,
+        matchPercent: mp,
       };
       setProfileData(d);
     } catch (e) {
@@ -61,6 +69,7 @@ const AnimatedStack = (props) => {
     try {
       const foundUser = await DataStore.query(User, u => u.sub("eq", subvalue));
       if (!foundUser[0]) return;
+      let mp = calculateMatchPercent(foundUser[0].hashtags);
       const d = {
         id: foundUser[0].sub,
         name: foundUser[0].name,
@@ -76,6 +85,7 @@ const AnimatedStack = (props) => {
         hashtags: foundUser[0].hashtags,
         values: foundUser[0].values,
         language: foundUser[0].language,
+        matchPercent: mp,
       };
       setNextProfileData(d);
     } catch (e) {
@@ -88,6 +98,7 @@ const AnimatedStack = (props) => {
 
 
   useEffect(() => {
+    if (!isFocused) return;
     if (!stack) return;
     if (stack.length < currentProfile) return;
     fetchProfileData(stack[currentProfile]);
@@ -246,7 +257,7 @@ const AnimatedStack = (props) => {
         {renderEmptyonBottom}
         {nextProfileData ? (
           <Animated.View style={[styles.nextCardContainer, nextCardStyle]} >
-            <Card profileData={nextProfileData} />
+            <Card profileData={nextProfileData} matchPercent={matchPercent} />
           </Animated.View>
         ) : (
           null
@@ -260,7 +271,7 @@ const AnimatedStack = (props) => {
             <Animated.View style={[styles.likeIcons, {backgroundColor: 'black',}, nopeStyle]} >
               {nopeIcon}
             </Animated.View>
-              <Card profileData={profileData} />            
+              <Card profileData={profileData} matchPercent={matchPercent} />            
           </Animated.View>
         </PanGestureHandler>
         ) : ( 
