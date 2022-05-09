@@ -6,7 +6,7 @@ import {
   TouchableOpacity, 
   ImageBackground 
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { useNavigation, useRoute, useIsFocused, useFocusEffect } from '@react-navigation/native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -18,6 +18,12 @@ const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 const Card = (props) => {
+
+  const position = useRef(null);
+
+  useEffect(() => {
+    position.current?.scrollTo({y: 0, animated: false});
+  }, [props]);
 
   const { 
     name, 
@@ -132,9 +138,9 @@ const Card = (props) => {
   );
 
   const clickablePercentButton = (
-    <TouchableOpacity style={styles.percentContainer}
+    <TouchableOpacity style={matchPercent > 75 ? styles.percentContainerHIGH : styles.percentContainerLOW}
     onPress={gotoProfileView} >
-      <Text style={{fontSize: 14, color: 'blue',}}>{matchPercent}%</Text>          
+      <Text style={matchPercent > 75 ? styles.matchHIGH : styles.matchLOW}>{matchPercent}%</Text>          
     </TouchableOpacity>
   );
 
@@ -156,7 +162,7 @@ const Card = (props) => {
 
   return (
     <View style={styles.pagecontainer}>
-      <ScrollView>
+      <ScrollView ref={position}>
         <View style={styles.card}>
           <View style={styles.imagesContainer}>
             {touchableOverlay}
@@ -238,7 +244,7 @@ const styles = StyleSheet.create({
       borderBottomWidth: 1,
       paddingVertical: 10,
     },
-    percentContainer: {
+    percentContainerLOW: {
       alignItems: 'center', 
       justifyContent: 'center', 
       width: 46,
@@ -248,6 +254,26 @@ const styles = StyleSheet.create({
       borderRadius: 23,
       borderColor: 'blue',
       borderWidth: 2,
+    },
+    percentContainerHIGH: {
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      width: 46,
+      height: 46,
+      right: 10,
+      backgroundColor: '#db0f46',
+      borderRadius: 23,
+      borderColor: '#911033',
+      borderWidth: 1,
+    },
+    matchLOW: {
+      fontSize: 14,
+      color: 'blue',
+    },
+    matchHIGH: {
+      fontSize: 14,
+      color: 'white',
+      fontWeight: 'bold',
     },
     imagesContainer: {
       flexDirection: 'row', 

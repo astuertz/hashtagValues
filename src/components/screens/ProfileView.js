@@ -109,7 +109,7 @@ const ProfileView = () => {
       images.map((e, index) => 
         <Image source={{uri: e}} 
           style={styles.wrap}
-          key={e}
+          key={`image ${index}`}
           resizeMode='stretch'  
           />
       )
@@ -121,7 +121,7 @@ const ProfileView = () => {
     <View style={styles.wrapDot}>
     {
       images.map((e, index) =>
-        <Text key={e}
+        <Text key={`dot ${index}`}
         style={activeImg == index ? styles.dotActive : styles.dotInactive}>
           ●
         </Text>  
@@ -240,17 +240,16 @@ const ProfileView = () => {
     <View style={{flexWrap: 'wrap', justifyContent: 'center', flexDirection: 'row',}}>
       {hashtags.length > 0 ? (
         hashtags.map((e, index) => 
-        <>
-          <View style={styles.hashTagContainer} key={e.name + '1'}>
+        <React.Fragment key={'hashtag' + index}>
+          <View style={styles.hashTagContainer} >
             <Text
-              key={'hashtag' + index}
               style={{color: "#782f2f", fontSize: 14, fontWeight: 'bold',}}
               >
               {e.name}
             </Text>
           </View>
           <View style={{flex: 1,}} />
-        </>
+        </React.Fragment>
         ) 
       ) : (
         <Text style={{color: "#782f2f", fontSize: 14, fontWeight: 'bold',}}>

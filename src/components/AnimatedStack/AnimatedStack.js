@@ -28,13 +28,22 @@ const AnimatedStack = (props) => {
   //const stack = useSelector((state) => state.profileStack.value);
   const stack = props.stack;
   const userValues = props.values;
-  const matchPercent = userValues.length;
   const sub = useSelector((state) => state.user.sub);
 
   const [currentProfile, setCurrentProfile] = useState(0);
 
-  const calculateMatchPercent = () => {
-    return matchPercent;
+  const calculateMatchPercent = (hashtags) => {
+    if (!hashtags || hashtags.length == 0) return 0;
+    let addedWeight = 0;
+    let totalWeight = 0;
+    userValues.forEach(e => {
+      totalWeight += e.weight;
+      hashtags.find((item, index) => {
+        if (item.name == e.name) return addedWeight += e.weight;
+      });
+    })
+    if (totalWeight == 0) return 0;
+    return Math.round((addedWeight / totalWeight) * 100);
   }
 
   const fetchProfileData = async (subvalue) => {
@@ -257,7 +266,7 @@ const AnimatedStack = (props) => {
         {renderEmptyonBottom}
         {nextProfileData ? (
           <Animated.View style={[styles.nextCardContainer, nextCardStyle]} >
-            <Card profileData={nextProfileData} matchPercent={matchPercent} />
+            <Card profileData={nextProfileData} />
           </Animated.View>
         ) : (
           null
@@ -271,7 +280,7 @@ const AnimatedStack = (props) => {
             <Animated.View style={[styles.likeIcons, {backgroundColor: 'black',}, nopeStyle]} >
               {nopeIcon}
             </Animated.View>
-              <Card profileData={profileData} matchPercent={matchPercent} />            
+              <Card profileData={profileData} />            
           </Animated.View>
         </PanGestureHandler>
         ) : ( 
