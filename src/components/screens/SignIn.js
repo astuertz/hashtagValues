@@ -16,7 +16,7 @@ import logo from '../../graphics/Values_logo.png';
 import { useNavigation } from '@react-navigation/native';
 import { Auth } from 'aws-amplify';
 import { useSelector, useDispatch, } from 'react-redux';
-import { validateUser } from '../../features/counter/userAuthSlice';
+import { validateUser, confirmUser, updateSub, forceUpdate, } from '../../features/counter/userAuthSlice';
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -38,6 +38,23 @@ const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const getAuth = async () => {
+    try {
+      let u = await Auth.currentAuthenticatedUser();
+      dispatch(validateUser(true));
+      if (!u) return;
+      let s = u.attributes.sub;
+      if (!s) return;
+      dispatch(updateSub(s));
+      if (u.attributes.email_verified) {
+        dispatch(confirmUser());
+      }
+      return s;
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
+
   const onPressSignIn = async () => {
     if (email.length < 1 || password.length < 1) return Alert.alert('no input', 'please input an email and password to log in.');
     try {
@@ -45,6 +62,7 @@ const SignIn = () => {
       dispatch(validateUser(true));
     } catch(e) {
       Alert.alert('Login Failed!', e.message);
+      getAuth();
       return;
     }
     Alert.alert('Login Successful!');

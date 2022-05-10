@@ -150,7 +150,11 @@ const RootStackScreen = () => {
     if (!datastoreIsReady) return;
     listener();
     loading();   
-  }, [datastoreIsReady]); 
+  }, [datastoreIsReady]);
+
+  useEffect(() => {
+    getAuth();
+  }, [user])
 
   return (
 

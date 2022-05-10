@@ -66,7 +66,7 @@ const Card = (props) => {
     if (!cardIsFocused) return;
     dispatch(reset());
     translateImagesX.value = 0;
-  }, [props.profileData]);
+  }, [name]);
 
 
   const navigation = useNavigation();

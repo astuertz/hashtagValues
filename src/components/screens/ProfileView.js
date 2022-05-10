@@ -184,7 +184,11 @@ const ProfileView = () => {
         size={18}
         color={'black'}
       />
-      <Text style={styles.profileDetailsText}>Looking For: {lookingFor}</Text>
+      <Text style={styles.profileDetailsText}>Looking For:  {lookingFor.map((e, i) => {
+        if (i == lookingFor.length - 2) return `${e} OR `;
+        if (i != lookingFor.length - 1) return `${e}, `;
+        return `${e}`;
+      })}</Text>
     </View>
     </>
   );
