@@ -20,6 +20,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useSelector, useDispatch, } from 'react-redux';
 import { DataStore } from '@aws-amplify/datastore';
 import { User } from '../../models';
+import calculateMatchPercent from './calculateMatchPercent';
 
 const AnimatedStack = (props) => {
 
@@ -32,25 +33,11 @@ const AnimatedStack = (props) => {
 
   const [currentProfile, setCurrentProfile] = useState(0);
 
-  const calculateMatchPercent = (hashtags) => {
-    if (!hashtags || hashtags.length == 0) return 0;
-    let addedWeight = 0;
-    let totalWeight = 0;
-    userValues.forEach(e => {
-      totalWeight += e.weight;
-      hashtags.find((item, index) => {
-        if (item.name == e.name) return addedWeight += e.weight;
-      });
-    })
-    if (totalWeight == 0) return 0;
-    return Math.round((addedWeight / totalWeight) * 100);
-  }
-
   const fetchProfileData = async (subvalue) => {
     try {
       const foundUser = await DataStore.query(User, u => u.sub("eq", subvalue));
       if (!foundUser[0]) return;
-      let mp = calculateMatchPercent(foundUser[0].hashtags);
+      let mp = calculateMatchPercent(foundUser[0].hashtags, userValues);
       const d = {
         id: foundUser[0].sub,
         name: foundUser[0].name,
@@ -78,7 +65,7 @@ const AnimatedStack = (props) => {
     try {
       const foundUser = await DataStore.query(User, u => u.sub("eq", subvalue));
       if (!foundUser[0]) return;
-      let mp = calculateMatchPercent(foundUser[0].hashtags);
+      let mp = calculateMatchPercent(foundUser[0].hashtags, userValues);
       const d = {
         id: foundUser[0].sub,
         name: foundUser[0].name,

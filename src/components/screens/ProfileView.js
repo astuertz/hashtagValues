@@ -237,7 +237,7 @@ const ProfileView = () => {
   const renderHashTags = (
     <>
     <Text style={{fontSize: 16, fontWeight: "bold",}}>Values</Text>
-    <View style={{flexWrap: 'wrap', justifyContent: 'center', flexDirection: 'row',}}>
+    <View style={{flexWrap: 'wrap', justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'flex-start',}}>
       {hashtags.length > 0 ? (
         hashtags.map((e, index) => 
         <React.Fragment key={'hashtag' + index}>
@@ -248,7 +248,7 @@ const ProfileView = () => {
               {e.name}
             </Text>
           </View>
-          <View style={{flex: 1,}} />
+          <View style={{flex: 1, maxWidth: 10,}} />
         </React.Fragment>
         ) 
       ) : (

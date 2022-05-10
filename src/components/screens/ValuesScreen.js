@@ -22,6 +22,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useIsFocused } from '@react-navigation/native';
 import { DataStore } from '@aws-amplify/datastore';
 import { User } from '../../models';
+import queryProfileStack from '../AnimatedStack/updateStack';
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -43,7 +44,10 @@ const ValuesScreen = ({ navigation }) => {
   const findUser = async () => {
     if (!sub) return;
     let u = await DataStore.query(User, u => u.sub("eq", sub));
-    if (!u[0]) return;
+    if (!u[0]) {
+      Alert.alert('Profile Not Setup', 'Set up your profile before setting your values');
+      navigation.pop();
+    }
     setHashtags(u[0].hashtags);
     setValues(u[0].values);
   }
@@ -79,13 +83,27 @@ const ValuesScreen = ({ navigation }) => {
         e.hashtags.filter(obj => {
             if (obj.name.toLowerCase().includes(search.toLowerCase())) {
                 let count = getValueCount(obj.name);
-                results.push({
+                let indexInResults = results.findIndex((item, i) => {
+                  return item.name.toLowerCase() == obj.name.toLowerCase();
+                });
+                if (indexInResults == -1) {
+                  results.push({
                     name: obj.name,
                     count: count,
-                })
+                  });
+                }                
             }
         });
     });
+    if (!results || results.length == 0) {
+      return Alert.alert('No matching values found','Try a new search or use a partial match (e.g. searching for "friend" will find results for "friendly" and "friendship")');
+    }
+    results.sort((a,b) => {
+      return b.count - a.count;
+    });
+    if (results.length > 20) {
+      results.length = 20;
+    }
     setFoundValues(results);
   }
 
@@ -117,27 +135,103 @@ const ValuesScreen = ({ navigation }) => {
     setHashtags(ht);
   }
 
+  const updateWeight = (text, index) => {
+    let isnum = /^\d+$/.test(text);
+    if (!isnum) {
+      if (text.length == 0) {
+        let ht = hashtags.slice();;
+        let newht = {
+            "name": ht[index].name,
+            "weight": text,
+        };
+        ht[index] = newht;
+        setHashtags(ht);
+      }
+      return;
+    }
+    let ht = hashtags.slice();;
+    let newht = {
+        "name": ht[index].name,
+        "weight": parseInt(text),
+    };
+    ht[index] = newht;
+    setHashtags(ht);
+  }
+
   const hashtagElement = (
     <>
     <Text style={styles.plainText} >Set Your Values:</Text>
     <Text style={styles.instructionsText} >This is what other users use to search for you.</Text>
-    {hashtags.map((e,index) => 
-    <TextInput 
-      placeholder='value'
-      key={index + 'value'}
-      value={hashtags[index].name}
-      onChangeText={text => updateHashtags(text,index)}
-      style={styles.textInput}  
-    />
-    )}
-    <TouchableOpacity 
+    {hashtags.map((e,index) =>
+    <React.Fragment key={`hashtagmap ${index}`}>
+    <View 
+      key={`hashtagmap ${index}`}
+      style={styles.imageInputRow}
+    >
+    <View style={[styles.valueInput, {width: WIDTH * .6}]} >
+      <TextInput 
+        placeholder='value'
+        value={hashtags[index].name}
+        onChangeText={text => updateHashtags(text,index)}
+        style={[styles.textInput, {width: WIDTH * .6, height: HEIGHT * .07,}]}  
+      />
+      <Text style={[styles.instructionsText, {position: 'absolute', top: 0, left: 0, elevation: 20, fontSize: 12,}]}>Value:</Text> 
+    </View>
+    <View style={[styles.valueInput, {width: WIDTH * .15}]} >
+      <TextInput 
+        placeholder='weight'
+        value={hashtags[index].weight.toString()}
+        onChangeText={text => updateWeight(text, index)}
+        keyboardType='numeric'
+        style={(/^\d+$/.test(hashtags[index].weight.toString()) && (hashtags[index].weight <= 100) && (hashtags[index].weight >= 0)) ? (
+          [styles.textInput, {width: WIDTH * .15, height: HEIGHT * .07, color: 'black', fontWeight: null,}]
+        ) : (
+          [styles.textInput, {width: WIDTH * .15, height: HEIGHT * .07, color: 'red', fontWeight: 'bold',}]
+        )}  
+      />
+      <Text style={[styles.instructionsText, {position: 'absolute', top: 0, left: 0, elevation: 20, fontSize: 12,}]}>Weight:</Text>
+    </View>
+    <TouchableOpacity
       onPress={() => {
-        let ht = hashtags;
+        let ht = [];
+        hashtags.forEach((e, i) => {
+          if (i != index) {
+            ht.push(e);
+          } 
+        });
+        setHashtags(ht);
+      }}>
+      <AntDesign 
+        name="minuscircleo"
+        size={30}
+        color={'red'}
+        style={styles.minusIcon}
+      />
+    </TouchableOpacity>
+    </View>
+    {!(/^\d+$/.test(hashtags[index].weight.toString())) ? (
+      <Text style={{position: 'relative', top: -10, left: 5, color: 'red',}}>Weight must be a number</Text>
+    ) : (
+      ((hashtags[index].weight > 100) || (hashtags[index].weight < 0)) ? (
+        <Text style={{position: 'relative', top: -10, left: 5, color: 'red',}}>Weight must be between 0 and 100</Text>
+      ) : (
+        null
+      )
+    )}
+    </React.Fragment>
+    )}
+    <TouchableOpacity
+      style={{alignSelf: 'center',}} 
+      onPress={() => {
+        let ht = [];
+        hashtags.forEach(e => {
+          ht.push(e);
+        });
         let newht = {
-            name: '',
-            weight: 0,
+            "name": '',
+            "weight": 0,
         };
-        ht[ht.length] = newht;
+        ht.push(newht);
         setHashtags(ht);
       }}
     >
@@ -147,6 +241,131 @@ const ValuesScreen = ({ navigation }) => {
         color={'black'}
       />
     </TouchableOpacity>
+    </>
+  );
+
+  const updateValues = (text, index) => {
+    let ht = values.slice();;
+    let newht = {
+        name: text,
+        weight: ht[index].weight,
+    };
+    ht[index] = newht;
+    setValues(ht);
+  }
+
+  const updateValuesWeight = (text, index) => {
+    let isnum = /^\d+$/.test(text);
+    if (!isnum) {
+      if (text.length == 0) {
+        let ht = values.slice();;
+        let newht = {
+            "name": ht[index].name,
+            "weight": text,
+        };
+        ht[index] = newht;
+        setValues(ht);
+      }
+      return;
+    }
+    let ht = values.slice();;
+    let newht = {
+        "name": ht[index].name,
+        "weight": parseInt(text),
+    };
+    ht[index] = newht;
+    setValues(ht);
+  }
+
+  const valuesElement = (
+    <>
+    <Text style={styles.plainText} >What Values Are You Looking For?</Text>
+    <Text style={styles.instructionsText} >This is the values you want in a partner. Setting a value to 100 means it is a "must have" in a partner.</Text>
+    {values.map((e,index) =>
+    <React.Fragment key={`valuesmap ${index}`}>
+    <View 
+      key={`valuesmap ${index}`}
+      style={styles.imageInputRow}
+    >
+    <View style={[styles.valueInput, {width: WIDTH * .6}]} >
+      <TextInput 
+        placeholder='value'
+        value={values[index].name}
+        onChangeText={text => updateValues(text,index)}
+        style={[styles.textInput, {width: WIDTH * .6, height: HEIGHT * .07,}]}  
+      />
+      <Text style={[styles.instructionsText, {position: 'absolute', top: 0, left: 0, elevation: 20, fontSize: 12,}]}>Value:</Text> 
+    </View>
+    <View style={[styles.valueInput, {width: WIDTH * .15}]} >
+      <TextInput 
+        placeholder='weight'
+        value={values[index].weight.toString()}
+        onChangeText={text => updateValuesWeight(text, index)}
+        keyboardType='numeric'
+        style={(/^\d+$/.test(values[index].weight.toString()) && (values[index].weight <= 100) && (values[index].weight >= 0)) ? (
+          [styles.textInput, {width: WIDTH * .15, height: HEIGHT * .07, color: 'black', fontWeight: null,}]
+        ) : (
+          [styles.textInput, {width: WIDTH * .15, height: HEIGHT * .07, color: 'red', fontWeight: 'bold',}]
+        )}  
+      />
+      <Text style={[styles.instructionsText, {position: 'absolute', top: 0, left: 0, elevation: 20, fontSize: 12,}]}>Weight:</Text>
+    </View>
+    <TouchableOpacity
+      onPress={() => {
+        let ht = [];
+        values.forEach((e, i) => {
+          if (i != index) {
+            ht.push(e);
+          } 
+        });
+        setValues(ht);
+      }}>
+      <AntDesign 
+        name="minuscircleo"
+        size={30}
+        color={'red'}
+        style={styles.minusIcon}
+      />
+    </TouchableOpacity>
+    </View>
+    {!(/^\d+$/.test(values[index].weight.toString())) ? (
+      <Text style={{position: 'relative', top: -10, left: 5, color: 'red',}}>Weight must be a number</Text>
+    ) : (
+      ((values[index].weight > 100) || (values[index].weight < 0)) ? (
+        <Text style={{position: 'relative', top: -10, left: 5, color: 'red',}}>Weight must be between 0 and 100</Text>
+      ) : (
+        null
+      )
+    )}
+    </React.Fragment>
+    )}
+    <TouchableOpacity
+      style={{alignSelf: 'center',}} 
+      onPress={() => {
+        let ht = [];
+        values.forEach(e => {
+          ht.push(e);
+        });
+        let newht = {
+            "name": '',
+            "weight": 0,
+        };
+        ht.push(newht);
+        setValues(ht);
+      }}
+    >
+      <Ionicons 
+        name="add-circle-outline"
+        size={40}
+        color={'black'}
+      />
+    </TouchableOpacity>
+    <TouchableOpacity 
+    onPress={() => setValues(hashtags)} 
+    style={styles.saveButton} 
+  >
+    <Text style={styles.buttonText}>Copy From Values</Text>
+  </TouchableOpacity>
     </>
   );
 
@@ -165,32 +384,26 @@ const ValuesScreen = ({ navigation }) => {
     </View>
   );
 
-  const HASHTAGS = {
-    "name": "libertarian",
-    "weight": 3,
-  };
+  useEffect(() => {
+
+  }, )
 
   const onPressSave = async () => {
-    if (!dbUser) return Alert.alert('Profile Not Set Up!','Go to Set Up Profile');
-    let dbUsers = await DataStore.query(User, u => u.sub("eq", sub));
-    let u = dbUsers[0];
-    /*
-    await DataStore.save(User.copyOf(u, updated => {
-      updated.name = name;
-      updated.image = newImages;
-      updated.bio = bio;
-      updated.gender = gender;
-      updated.lookingfor = lf;
-      updated.height = height;
-      updated.bodytype = bodyType;
-      updated.language = language;
-      updated.kids = hasKids;
-      updated.age = age;
-      updated.location = location;
-    }));
-    */
-    Alert.alert('Profile Saved!');
-    navigation.pop();
+    try {
+      let dbUsers = await DataStore.query(User, u => u.sub("eq", sub));
+      if (!dbUsers || dbUsers.length == 0) return Alert.alert('Profile Not Set Up!','Go to Set Up Profile');
+      let u = dbUsers[0];
+      let newStack = await queryProfileStack(sub, u.gender, u.lookingfor, u.id);
+      await DataStore.save(User.copyOf(u, updated => {
+        updated.hashtags = hashtags;
+        updated.values = values;
+        updated.stack = newStack;
+      }));
+      Alert.alert('Profile Saved!');
+      navigation.pop();
+    } catch (e) {
+      console.log(e.message);
+    }
   }
 
   const saveButton = (
@@ -219,8 +432,11 @@ const ValuesScreen = ({ navigation }) => {
         {searchButton}
         {displaySearchResults}
     </View>
-    <View style={styles.searchContainer} >
+    <View style={[styles.searchContainer, {alignItems: 'flex-start',}]} >
         {hashtagElement}
+    </View>
+    <View style={[styles.searchContainer, {alignItems: 'flex-start',}]} >
+        {valuesElement}
     </View>
     {saveButton}
     </>
@@ -278,6 +494,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginBottom: 15,
     fontSize: 20,
+    borderColor: 'black', 
+    borderWidth: 2,
   },
   buttonActive: {
     height: 40,
@@ -399,6 +617,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginBottom: 10,
+    borderColor: 'black', 
+    borderWidth: 2,
   },
   searchContainer: {
     justifyContent: 'flex-start',
@@ -410,6 +630,18 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     marginBottom: 10,
     borderRadius: 10, 
+    borderColor: 'black', 
+    borderWidth: 2,
+  },
+  valueInput: {
+    backgroundColor: 'white', 
+    flexDirection: 'row', 
+    marginLeft: 5,
+    marginRight: 10, 
+    overflow: 'hidden', 
+    marginBottom: 10, 
+    height: HEIGHT * .07,
+    borderRadius: 5,
   },
 });
 

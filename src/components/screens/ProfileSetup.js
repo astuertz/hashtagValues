@@ -495,13 +495,6 @@ const ProfileSetup = ({ navigation }) => {
     </TouchableOpacity>
     </>
   );
-
-  const HASHTAGS = {
-    "label": "politics",
-    "name": "libertarian",
-    "weight": 3,
-  };
-
   
   const isValid = () => {
     return name && gender && lookingfor && height && bodyType && language && hasKids && bio;

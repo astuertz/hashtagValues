@@ -1,6 +1,7 @@
 import { useSelector, useDispatch, } from 'react-redux';
 import { DataStore } from '@aws-amplify/datastore';
 import { User, Match } from '../../models';
+import calculateMatchPercent from './calculateMatchPercent';
 
 const hasNotPassed = (item, u) => {
     if (!item.swipes) return true;
@@ -52,14 +53,24 @@ const queryProfileStack = async (sub, gender, lookingfor, id) => {
         2. filter all users who have not "passed" on Auth user
         BUT keep all users who haven't swiped on Auth user
         3. filter all users Auth user has not swiped yet.
+        4. Then calculate Match Percent and sort.
+        BUT if Auth User has not set Values, sort by sub ID instead.
+        NOTE User Profiles may change after setting Stack Array
+        THEREFORE Match Percent is recalculated when rendering Profile Card for each user.
+        AND THUS this information is not saved in Array.
          */
         let filteredUsers = dbUsers.filter(e => 
             lookingfor.indexOf(e.gender) >= 0).filter(f =>
                 hasNotPassed(f, sub)).filter(g =>
                     hasNotMatched(g, id, matches, sub)
-                ).filter(h => userHasNotSwiped(h, AuthUser[0].swipes, AuthUser));
+                ).filter(h => userHasNotSwiped(h, AuthUser[0].swipes, AuthUser)).sort((a,b) => {
+                    if (AuthUser[0].values && AuthUser[0].values.length > 0) {
+                        return calculateMatchPercent(b.hashtags, AuthUser[0].values) - calculateMatchPercent(a.hashtags, AuthUser[0].values);
+                    } else {
+                        return a.sub - b.sub;
+                    }
+                });
         filteredUsers.forEach(e => stack.push(e.sub));
-        stack = stack.sort();
         /*
         let dbU = await DataStore.query(User, u => u.sub("eq", sub));
         let u = dbU[0];
